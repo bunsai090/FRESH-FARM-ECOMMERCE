@@ -1,12 +1,17 @@
 <?php
-// config/database.php - Database connection
-define('DB_HOST', 'localhost');
-define('DB_USER', 'root');
-define('DB_PASS', '');
-define('DB_NAME', 'fresh_farm');
+// Start session if not already started
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
-// Create database connection
-$conn = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
+// Database connection parameters
+$host = 'localhost';
+$dbname = 'fresh_farm';  // Make sure this is your actual database name
+$username = 'root';
+$password = '';
+
+// Create connection
+$conn = new mysqli($host, $username, $password, $dbname);
 
 // Check connection
 if ($conn->connect_error) {

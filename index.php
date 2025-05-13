@@ -559,7 +559,7 @@
               
               // Redirect after successful login
               setTimeout(function() {
-                window.location.href = 'profile.html'; // Redirect to profile page
+                window.location.href = 'user-dashboard/user.php'; // Redirect to profile page
               }, 1500);
             } else {
               // Error
@@ -627,7 +627,7 @@
               
               // Redirect after successful signup
               setTimeout(function() {
-                window.location.href = 'profile.html'; // Redirect to profile page
+                window.location.href = ''; // Redirect to profile page
               }, 2000);
             } else {
               // Error

@@ -1,7 +1,8 @@
 <?php
 // Include database connection
 require_once '../connect.php';
-session_start();
+
+
 
 // Handle form submissions
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -356,7 +357,7 @@ $products = getProducts($conn, $search);
                     <div class="dropdown">
                         <a class="dropdown-toggle text-decoration-none text-dark" href="#" role="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                             <img src="../assets/admin_avatar.jpg" alt="Admin Profile" width="36" height="36" class="rounded-circle" />
-                            <span>Admin User</span>
+                            
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
                             <li><a class="dropdown-item" href="#"><i class="fas fa-user me-2"></i> Profile</a></li>
