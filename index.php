@@ -1,3 +1,8 @@
+<?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -201,15 +206,12 @@
         
         // Check if user is logged in (function to be implemented)
         function isUserLoggedIn() {
-          // This would be replaced with actual session checking logic
           <?php
-          // If using PHP sessions, uncomment this
-          // session_start();
-          // echo isset($_SESSION['user_id']) ? 'return true;' : 'return false;';
+          if (session_status() === PHP_SESSION_NONE) {
+              session_start();
+          }
+          echo isset($_SESSION['user_id']) ? 'return true;' : 'return false;';
           ?>
-          
-          // For demo purposes, always return false to show the login modal
-          return false;
         }
         
         // Fetch products from database
@@ -217,7 +219,7 @@
         
         // Function to fetch products from the database
         function fetchProducts() {
-          fetch('get_random_products.php')
+          fetch('user-dashboard/get_random_products.php')
             .then(response => response.json())
             .then(data => {
               if (data.status) {
