@@ -58,6 +58,20 @@ try {
     // If table doesn't exist or other error, keep count at 0
     error_log("Error getting favorite count: " . $e->getMessage());
 }
+
+// Get user's favorited products
+$favoritedProducts = [];
+try {
+    $favoriteProductsStmt = $conn->prepare("SELECT product_id FROM favorites WHERE user_id = ?");
+    $favoriteProductsStmt->bind_param("i", $user_id);
+    $favoriteProductsStmt->execute();
+    $favoriteResult = $favoriteProductsStmt->get_result();
+    while ($row = $favoriteResult->fetch_assoc()) {
+        $favoritedProducts[] = $row['product_id'];
+    }
+} catch (Exception $e) {
+    error_log("Error getting favorited products: " . $e->getMessage());
+}
 ?>
 
 <!DOCTYPE html>
@@ -70,397 +84,19 @@ try {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
-        }
-
-        :root {
-            --primary-color: #3b7a57;
-            --secondary-color: #2c5a3f;
-            --text-color: #333;
-            --bg-color: #f5f5f5;
-        }
-
-        body {
-            background-color: var(--bg-color);
-            min-height: 100vh;
-            overflow-x: hidden;
-        }
-
-        /* Glass effect header */
-        .header {
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            background: var(--primary-color);
-            padding: 0.5rem 1rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            height: 50px;
-        }
-
-        .logo {
-            color: white;
-            font-size: 1.5rem;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .search-bar {
-            flex: 1;
-            max-width: 500px;
-            margin: 0 2rem;
-        }
-
-        .search-bar input {
-            width: 100%;
-            padding: 0.5rem 1rem;
-            border: none;
-            border-radius: 5px;
-            background: rgba(255, 255, 255, 0.9);
-        }
-
-        .nav-menu {
-            display: flex;
-            align-items: center;
-            gap: 1.5rem;
-            margin: 0 auto;
-            padding: 0.25rem 0.5rem;
-            background: var(--primary-color);
-        }
-
-        .nav-menu a {
-            color: white;
-            text-decoration: none;
-            font-weight: 500;
-            font-size: 0.95rem;
-            display: flex;
-            align-items: center;
-            gap: 0.4rem;
-            padding: 0.4rem 0.8rem;
-            border-radius: 4px;
-            transition: background-color 0.3s;
-        }
-
-        .nav-menu a:hover {
-            background: rgba(255, 255, 255, 0.1);
-        }
-
-        .nav-menu i {
-            font-size: 1rem;
-        }
-
-        /* Sidebar */
-        .container {
-            display: flex;
-            position: relative;
-        }
-
-        .sidebar {
-            width: 250px;
-            background: white;
-            height: 100vh;
-            position: fixed;
-            left: 0;
-            transition: all 0.3s ease;
-            z-index: 999;
-            padding-top: 15px;
-            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
-        }
-
-        .sidebar.collapsed {
-            left: -250px;
-        }
-
-        .toggle-container {
-            position: absolute;
-            right: -40px;
-            top: 350px;
-            z-index: 1000;
-            transition: all 0.3s ease;
-        }
-
-        .toggle-btn {
-            background: var(--primary-color);
-            color: white;
-            border: none;
-            width: 40px;
-            height: 40px;
-            border-radius: 0 8px 8px 0;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
-            transition: all 0.3s ease;
-        }
-
-        .toggle-btn:hover {
-            background: var(--secondary-color);
-            width: 45px;
-        }
-
-        .toggle-btn i {
-            transition: transform 0.3s ease;
-        }
-
-        .sidebar.collapsed .toggle-btn i {
-            transform: rotate(180deg);
-        }
-
-        .user-info {
-            text-align: center;
-            padding: 2rem 1rem;
-            border-bottom: 1px solid #eee;
-        }
-
-        .user-avatar {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            margin-bottom: 1rem;
-            object-fit: cover;
-        }
-
-        .user-stats {
-            display: flex;
-            justify-content: center;
-            gap: 2rem;
-            margin-top: 1rem;
-        }
-
-        .stat {
-            text-align: center;
-        }
-
-        .stat-number {
-            font-weight: 600;
-            color: var(--primary-color);
-        }
-
-        .stat-label {
-            font-size: 0.8rem;
-            color: #666;
-        }
-
-        .menu-items {
-            list-style: none;
-            padding: 1rem;
-        }
-
-        .menu-items li {
-            margin-bottom: 0.5rem;
-        }
-
-        .menu-items a {
-            display: flex;
-            align-items: center;
-            gap: 0.8rem;
-            padding: 0.75rem 1rem;
-            color: var(--text-color);
-            text-decoration: none;
-            border-radius: 5px;
-            transition: all 0.3s;
-        }
-
-        .menu-items a:hover {
-            background-color: rgba(59, 122, 87, 0.1);
-            color: var(--primary-color);
-        }
-
-        .menu-items i {
-            width: 20px;
-            text-align: center;
-        }
-
-        /* Main Content */
-        .main-content {
-            flex: 1;
-            margin-left: 250px;
-            padding: 2rem;
-            transition: all 0.3s ease;
-        }
-
-        .main-content.expanded {
-            margin-left: 0;
-        }
-
-        .section-title {
-            font-size: 1.5rem;
-            margin-bottom: 2rem;
-            color: var(--primary-color);
-        }
-
-        .products-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 2rem;
-        }
-
-        .product-card {
-            background: white;
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s;
-        }
-
-        .product-card:hover {
-            transform: translateY(-5px);
-        }
-
-        .product-image {
-            width: 100%;
-            height: 200px;
-            object-fit: cover;
-        }
-
-        .product-info {
-            padding: 1.5rem;
-        }
-
-        .product-title {
-            font-size: 1.2rem;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-            color: var(--text-color);
-        }
-
-        .product-price {
-            color: var(--primary-color);
-            font-weight: 600;
-            font-size: 1.1rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .product-description {
-            font-size: 0.9rem;
-            color: #666;
-            margin-bottom: 1rem;
-        }
-
-        .cart-btn {
-            background: var(--primary-color);
-            color: white;
-            border: none;
-            padding: 0.75rem;
-            border-radius: 5px;
-            cursor: pointer;
-            width: 100%;
-            font-weight: 500;
-            transition: background-color 0.3s;
-        }
-
-        .cart-btn:hover {
-            background: var(--secondary-color);
-        }
-
-        @media (max-width: 768px) {
-            .sidebar {
-                left: -250px;
-            }
-            
-            .sidebar.active {
-                left: 0;
-            }
-            
-            .main-content {
-                margin-left: 0;
-            }
-            
-            .toggle-container {
-                right: -40px;
-            }
-        }
-
-        /* Add these styles in the style section */
-        .modal-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 9999;
-            backdrop-filter: blur(4px);
-        }
-
-        .logout-modal {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: white;
-            padding: 2rem;
-            border-radius: 10px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-            text-align: center;
-            width: 90%;
-            max-width: 400px;
-        }
-
-        .logout-modal h2 {
-            color: var(--primary-color);
-            margin-bottom: 1rem;
-            font-size: 1.5rem;
-        }
-
-        .logout-modal p {
-            color: #666;
-            margin-bottom: 2rem;
-        }
-
-        .modal-buttons {
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-        }
-
-        .modal-btn {
-            padding: 0.8rem 2rem;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: 500;
-            transition: all 0.3s ease;
-        }
-
-        .confirm-btn {
-            background: var(--primary-color);
-            color: white;
-        }
-
-        .confirm-btn:hover {
-            background: var(--secondary-color);
-        }
-
-        .cancel-btn {
-            background: #f0f0f0;
-            color: #333;
-        }
-
-        .cancel-btn:hover {
-            background: #e0e0e0;
-        }
-    </style>
+    <link rel="stylesheet" href="../css/user.css">
+    <script src="js/search.js" defer></script>
 </head>
 <body>
     <!-- Glass effect header -->
     <header class="header">
         <div class="logo">
-            <i class="fa-solid fa-seedling"></i>
+            <i class="fa-solid fa-leaf"></i>
             FarmFresh
         </div>
         <div class="search-bar">
-            <input type="text" placeholder="Search products...">
+            <input type="text" id="searchInput" placeholder="Search products...">
+            <div class="search-suggestions" id="searchSuggestions"></div>
         </div>
         <nav class="nav-menu">
             <a href="#"><i class="fa-solid fa-house"></i> Home</a>
@@ -468,10 +104,9 @@ try {
             <a href="#"><i class="fa-solid fa-carrot"></i> Vegetables</a>
             <a href="#"><i class="fa-solid fa-cow"></i> Dairy</a>
             <a href="#"><i class="fa-solid fa-drumstick-bite"></i> Meat</a>
-            <a href="#"><i class="fa-solid fa-leaf"></i> Organic</a>
+            <a href="#"><i class="fa-solid fa-seedling"></i> Organic</a>
             <a href="#"><i class="fa-solid fa-bread-slice"></i> Bakery</a>
             <a href="#" class="cart"><i class="fa-solid fa-cart-shopping"></i></a>
-            <a href="#" class="profile"><i class="fa-solid fa-user"></i></a>
         </nav>
     </header>
 
@@ -513,25 +148,137 @@ try {
 
         <!-- Main Content -->
         <main class="main-content">
-            <h2 class="section-title">Featured Products</h2>
+            <h2 class="section-title">All Products</h2>
             <div class="products-grid">
                 <?php
-                // Get random products from database
-                $query = "SELECT * FROM products WHERE status != 'Out of Stock' ORDER BY RAND() LIMIT 8";
-                $result = $conn->query($query);
+                // Number of products per page
+                $products_per_page = 12;
+                
+                // Get current page
+                $current_page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+                $offset = ($current_page - 1) * $products_per_page;
 
-                while ($product = $result->fetch_assoc()) {
-                    ?>
-                    <div class="product-card">
-                        <img src="../<?php echo $product['image_path']; ?>" alt="<?php echo $product['name']; ?>" class="product-image">
-                        <div class="product-info">
-                            <h3 class="product-title"><?php echo $product['name']; ?></h3>
-                            <p class="product-price">₱<?php echo number_format($product['price'], 2); ?> / <?php echo $product['unit']; ?></p>
-                            <p class="product-description"><?php echo $product['description']; ?></p>
-                            <button class="cart-btn">Add to Cart</button>
+                // Get total number of products
+                $total_query = "SELECT COUNT(*) as total FROM products";
+                $total_result = $conn->query($total_query);
+                $total_products = $total_result->fetch_assoc()['total'];
+                $total_pages = ceil($total_products / $products_per_page);
+
+                // Get products for current page with random ordering
+                $query = "SELECT * FROM products ORDER BY RAND() LIMIT ? OFFSET ?";
+                $stmt = $conn->prepare($query);
+                $stmt->bind_param("ii", $products_per_page, $offset);
+                $stmt->execute();
+                $result = $stmt->get_result();
+
+                if ($result && $result->num_rows > 0) {
+                    while ($product = $result->fetch_assoc()) {
+                        // Determine status class and badge text
+                        $statusClass = '';
+                        $badgeText = '';
+                        
+                        if ($product['stock'] <= 0) {
+                            $statusClass = 'out-of-stock';
+                            $badgeText = 'Out of Stock';
+                        } elseif ($product['stock'] <= 15) {
+                            $statusClass = 'low-stock';
+                            $badgeText = 'Low Stock';
+                        } else {
+                            $statusClass = 'in-stock';
+                            $badgeText = 'In Stock';
+                        }
+                        ?>
+                        <div class="product-card <?php echo $statusClass; ?>" 
+                             data-product-id="<?php echo htmlspecialchars($product['id']); ?>" 
+                             data-stock="<?php echo htmlspecialchars($product['stock']); ?>" 
+                             data-unit="<?php echo htmlspecialchars($product['unit']); ?>">
+                            <span class="stock-badge"><?php echo $badgeText; ?></span>
+                            <img src="../<?php echo $product['image_path']; ?>" alt="<?php echo $product['name']; ?>" class="product-image">
+                            <div class="product-info">
+                                <span class="product-category"><?php echo $product['category']; ?></span>
+                                <h3 class="product-title"><?php echo $product['name']; ?></h3>
+                                <p class="product-price">
+                                    ₱<?php echo number_format($product['price'], 2); ?>
+                                    <span class="product-unit">/ <?php echo $product['unit']; ?></span>
+                                </p>
+                                <p class="product-description"><?php echo $product['description']; ?></p>
+                                <p class="stock-status">
+                                    <span class="stock-indicator"></span>
+                                    <?php 
+                                    if ($product['stock'] > 0) {
+                                        echo $product['stock'] . ' ' . $product['unit'] . 's available';
+                                    } else {
+                                        echo 'Currently unavailable';
+                                    }
+                                    ?>
+                                </p>
+                                <div class="product-actions">
+                                    <button class="cart-btn" <?php echo ($product['stock'] <= 0) ? 'disabled' : ''; ?>>
+                                        <i class="fa-solid fa-cart-plus"></i>
+                                        <?php echo ($product['stock'] > 0) ? 'Add to Cart' : 'Out of Stock'; ?>
+                                    </button>
+                                    <button class="favorite-btn <?php echo in_array($product['id'], $favoritedProducts) ? 'active' : ''; ?>" title="<?php echo in_array($product['id'], $favoritedProducts) ? 'Remove from Favorites' : 'Add to Favorites'; ?>">
+                                        <i class="fa-solid fa-heart"></i>
+                                    </button>
+                                    <button class="buy-btn" <?php echo ($product['stock'] <= 0) ? 'disabled' : ''; ?>>
+                                        <i class="fa-solid fa-bolt"></i>
+                                        Buy Now
+                                    </button>
+                                </div>
+                            </div>
                         </div>
+                        <?php
+                    }
+                    ?>
+                    <!-- Add pagination controls -->
+                    <div class="pagination">
+                        <?php if ($total_pages > 1): ?>
+                            <button 
+                                onclick="window.location.href='?page=1'"
+                                class="pagination-btn"
+                                <?php echo $current_page == 1 ? 'disabled' : ''; ?>
+                            >
+                                <i class="fas fa-angle-double-left"></i>
+                            </button>
+                            
+                            <button 
+                                onclick="window.location.href='?page=<?php echo max(1, $current_page - 1); ?>'"
+                                class="pagination-btn"
+                                <?php echo $current_page == 1 ? 'disabled' : ''; ?>
+                            >
+                                <i class="fas fa-angle-left"></i>
+                            </button>
+
+                            <?php
+                            // Show page numbers
+                            for ($i = max(1, $current_page - 2); $i <= min($total_pages, $current_page + 2); $i++) {
+                                echo '<button 
+                                    onclick="window.location.href=\'?page=' . $i . '\'"
+                                    class="pagination-btn ' . ($current_page == $i ? 'active' : '') . '"
+                                >' . $i . '</button>';
+                            }
+                            ?>
+
+                            <button 
+                                onclick="window.location.href='?page=<?php echo min($total_pages, $current_page + 1); ?>'"
+                                class="pagination-btn"
+                                <?php echo $current_page == $total_pages ? 'disabled' : ''; ?>
+                            >
+                                <i class="fas fa-angle-right"></i>
+                            </button>
+                            
+                            <button 
+                                onclick="window.location.href='?page=<?php echo $total_pages; ?>'"
+                                class="pagination-btn"
+                                <?php echo $current_page == $total_pages ? 'disabled' : ''; ?>
+                            >
+                                <i class="fas fa-angle-double-right"></i>
+                            </button>
+                        <?php endif; ?>
                     </div>
                     <?php
+                } else {
+                    echo '<p class="no-products">No products available at this time.</p>';
                 }
                 ?>
             </div>
@@ -546,6 +293,35 @@ try {
             <div class="modal-buttons">
                 <button class="modal-btn cancel-btn" onclick="hideLogoutModal()">Cancel</button>
                 <button class="modal-btn confirm-btn" onclick="confirmLogout()">Logout</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Buy Now Modal -->
+    <div class="buy-modal-overlay" id="buyModal">
+        <div class="buy-modal">
+            <div class="buy-modal-header">
+                <h2 class="buy-modal-title">Buy Now</h2>
+                <button class="buy-modal-close">&times;</button>
+            </div>
+            <div class="buy-modal-content">
+                <div class="product-preview">
+                    <img src="" alt="" class="preview-image" id="previewImage">
+                    <div class="preview-details">
+                        <h3 class="preview-title" id="previewTitle"></h3>
+                        <p class="preview-price" id="previewPrice"></p>
+                    </div>
+                </div>
+                <div class="quantity-selector">
+                    <button class="quantity-btn" id="decreaseQuantity">-</button>
+                    <input type="number" class="quantity-input" id="quantityInput" value="1" min="1">
+                    <button class="quantity-btn" id="increaseQuantity">+</button>
+                </div>
+                <p class="stock-info" id="stockInfo"></p>
+            </div>
+            <div class="buy-modal-actions">
+                <button class="modal-btn cancel-buy-btn">Cancel</button>
+                <button class="modal-btn confirm-buy-btn">Confirm Purchase</button>
             </div>
         </div>
     </div>
@@ -631,6 +407,294 @@ try {
             if (e.key === 'Escape') {
                 hideLogoutModal();
             }
+        });
+
+        // Initialize Buy Now functionality
+        document.querySelectorAll('.buy-btn').forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const productCard = this.closest('.product-card');
+                const productData = {
+                    id: productCard.dataset.productId,
+                    name: productCard.querySelector('.product-title').textContent,
+                    price: productCard.querySelector('.product-price').textContent,
+                    image: productCard.querySelector('.product-image').src,
+                    stock: parseInt(productCard.dataset.stock),
+                    unit: productCard.dataset.unit
+                };
+                
+                showBuyModal(productData);
+            });
+        });
+
+        // Prevent Buy Now and Add to Cart buttons from triggering card click
+        document.querySelectorAll('.cart-btn, .buy-btn, .favorite-btn').forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.stopPropagation();
+            });
+        });
+
+        const buyModal = document.getElementById('buyModal');
+        const buyModalClose = buyModal.querySelector('.buy-modal-close');
+        const cancelBuyBtn = buyModal.querySelector('.cancel-buy-btn');
+        const confirmBuyBtn = buyModal.querySelector('.confirm-buy-btn');
+        const quantityInput = document.getElementById('quantityInput');
+        const decreaseQuantityBtn = document.getElementById('decreaseQuantity');
+        const increaseQuantityBtn = document.getElementById('increaseQuantity');
+
+        // Function to show modal
+        function showBuyModal(productData) {
+            document.getElementById('previewImage').src = productData.image;
+            document.getElementById('previewTitle').textContent = productData.name;
+            document.getElementById('previewPrice').textContent = productData.price;
+            document.getElementById('stockInfo').textContent = `Available: ${productData.stock} ${productData.unit}s`;
+            
+            buyModal.style.display = 'block';
+            setTimeout(() => {
+                buyModal.querySelector('.buy-modal').classList.add('active');
+            }, 10);
+
+            // Reset quantity
+            quantityInput.value = 1;
+            quantityInput.max = productData.stock;
+        }
+
+        // Function to hide modal
+        function hideBuyModal() {
+            buyModal.querySelector('.buy-modal').classList.remove('active');
+            setTimeout(() => {
+                buyModal.style.display = 'none';
+            }, 300);
+        }
+
+        // Quantity controls
+        decreaseQuantityBtn.addEventListener('click', () => {
+            const currentValue = parseInt(quantityInput.value);
+            if (currentValue > 1) {
+                quantityInput.value = currentValue - 1;
+            }
+        });
+
+        increaseQuantityBtn.addEventListener('click', () => {
+            const currentValue = parseInt(quantityInput.value);
+            const maxValue = parseInt(quantityInput.max);
+            if (currentValue < maxValue) {
+                quantityInput.value = currentValue + 1;
+            }
+        });
+
+        // Quantity input validation
+        quantityInput.addEventListener('change', () => {
+            let value = parseInt(quantityInput.value);
+            const max = parseInt(quantityInput.max);
+            
+            if (isNaN(value) || value < 1) value = 1;
+            if (value > max) value = max;
+            
+            quantityInput.value = value;
+        });
+
+        // Close modal events
+        buyModalClose.addEventListener('click', hideBuyModal);
+        cancelBuyBtn.addEventListener('click', hideBuyModal);
+        buyModal.addEventListener('click', (e) => {
+            if (e.target === buyModal) {
+                hideBuyModal();
+            }
+        });
+
+        // Handle confirm purchase
+        confirmBuyBtn.addEventListener('click', function() {
+            const productId = document.querySelector('.buy-modal').dataset.productId;
+            const quantity = quantityInput.value;
+            
+            // Here you can redirect to checkout or process the purchase
+            window.location.href = `checkout.php?product_id=${productId}&quantity=${quantity}&buy_now=true`;
+        });
+
+        // Initialize favorite buttons
+        document.querySelectorAll('.favorite-btn').forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation(); // Prevent event bubbling
+                
+                const productCard = this.closest('.product-card');
+                const productId = productCard.dataset.productId;
+                
+                // Toggle favorite
+                fetch('../toggle_favorite.php', {
+                    method: 'POST',
+                    body: JSON.stringify({ product_id: productId }),
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status) {
+                        // Update button appearance
+                        this.classList.toggle('active', data.is_favorite);
+                        
+                        // Update ONLY the favorite count in sidebar
+                        const favoriteCountElement = document.querySelector('.user-stats .stat:nth-child(2) .stat-number');
+                        if (favoriteCountElement) {
+                            favoriteCountElement.textContent = data.favorite_count;
+                        }
+                        
+                        // Show notification
+                        showNotification(data.message, 'success');
+                    } else {
+                        showNotification(data.message || 'Error updating favorites', 'error');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showNotification('Error updating favorites', 'error');
+                });
+            });
+        });
+
+        // Add notification function
+        function showNotification(message, type = 'success') {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.innerHTML = `
+                <i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i>
+                <span>${message}</span>
+            `;
+            
+            // Add to notification container (create if doesn't exist)
+            let container = document.getElementById('notification-container');
+            if (!container) {
+                container = document.createElement('div');
+                container.id = 'notification-container';
+                container.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    z-index: 1000;
+                `;
+                document.body.appendChild(container);
+            }
+            
+            container.appendChild(notification);
+            
+            // Remove notification after 3 seconds
+            setTimeout(() => {
+                notification.style.opacity = '0';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+
+        // Add this to your existing JavaScript
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('searchInput');
+            const searchSuggestions = document.getElementById('searchSuggestions');
+            let debounceTimer;
+
+            // Function to show loading state
+            function showLoading() {
+                searchSuggestions.innerHTML = `
+                    <div class="suggestion-item loading">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        Searching...
+                    </div>
+                `;
+                searchSuggestions.classList.add('active');
+            }
+
+            // Function to highlight matching text
+            function highlightMatch(text, query) {
+                if (!query) return text;
+                const regex = new RegExp(`(${query})`, 'gi');
+                return text.replace(regex, '<span class="highlight">$1</span>');
+            }
+
+            // Function to create suggestion item
+            function createSuggestionItem(product, query) {
+                return `
+                    <div class="suggestion-item" data-product-id="${product.id}">
+                        <img src="${product.image_path}" alt="${product.name}" onerror="this.src='../assets/images/default-product.jpg'">
+                        <div class="item-details">
+                            <div class="item-name">${highlightMatch(product.name, query)}</div>
+                            <div class="item-category">${product.category}</div>
+                        </div>
+                        <div class="item-price">₱${product.price.toFixed(2)}</div>
+                    </div>
+                `;
+            }
+
+            // Function to fetch suggestions
+            function fetchSuggestions(query) {
+                showLoading();
+                
+                // Make an AJAX call to get suggestions
+                fetch(`../get_suggestions.php?query=${encodeURIComponent(query)}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (Array.isArray(data) && data.length > 0) {
+                            const suggestionsHtml = data
+                                .map(product => createSuggestionItem(product, query))
+                                .join('');
+                            searchSuggestions.innerHTML = suggestionsHtml;
+                        } else {
+                            searchSuggestions.innerHTML = `
+                                <div class="suggestion-item no-results">
+                                    <i class="fas fa-search"></i>
+                                    No products found for "${query}"
+                                </div>
+                            `;
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error fetching suggestions:', error);
+                        searchSuggestions.innerHTML = `
+                            <div class="suggestion-item error">
+                                <i class="fas fa-exclamation-circle"></i>
+                                Error fetching suggestions
+                            </div>
+                        `;
+                    });
+            }
+
+            // Input event listener with debounce
+            searchInput.addEventListener('input', function() {
+                clearTimeout(debounceTimer);
+                const query = this.value.trim();
+                
+                if (query.length >= 2) {
+                    debounceTimer = setTimeout(() => {
+                        fetchSuggestions(query);
+                    }, 300); // Debounce delay of 300ms
+                } else {
+                    searchSuggestions.classList.remove('active');
+                }
+            });
+
+            // Close suggestions when clicking outside
+            document.addEventListener('click', function(e) {
+                if (!searchInput.contains(e.target) && !searchSuggestions.contains(e.target)) {
+                    searchSuggestions.classList.remove('active');
+                }
+            });
+
+            // Handle suggestion click
+            searchSuggestions.addEventListener('click', function(e) {
+                const suggestionItem = e.target.closest('.suggestion-item');
+                if (suggestionItem) {
+                    const productId = suggestionItem.dataset.productId;
+                    // Navigate to product page or handle the selection
+                    window.location.href = `product.php?id=${productId}`;
+                }
+            });
+
+            // Focus event to show suggestions again if input has value
+            searchInput.addEventListener('focus', function() {
+                const query = this.value.trim();
+                if (query.length >= 2) {
+                    fetchSuggestions(query);
+                }
+            });
         });
     </script>
 </body>
