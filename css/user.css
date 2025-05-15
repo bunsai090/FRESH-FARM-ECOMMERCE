@@ -123,94 +123,23 @@ body {
     background: rgba(255, 255, 255, 0.25);
 }
 
-/* Sidebar */
+/* Container Layout */
 .container {
     display: flex;
     position: relative;
     margin-top: 60px;
+    min-height: calc(100vh - 60px);
 }
 
+/* Sidebar Styles */
 .sidebar {
     width: 280px;
     background: white;
-    height: calc(100vh - 60px); /* Account for header height */
+    height: 100vh;
     position: fixed;
     left: 0;
-    top: 60px; /* Position below header */
-    transition: transform 0.3s ease, left 0.3s ease;
-    z-index: 999;
-    padding-top: 15px;
-    box-shadow: 2px 0 5px rgba(0,0,0,0.1);
-    overflow-y: auto;
-    transform: translateX(0);
-}
-
-.sidebar.collapsed {
-    transform: translateX(-280px);
-}
-
-/* Toggle Button Styles - Fixed */
-.toggle-container {
-    position: fixed;
-    left: 280px;
-    top: 75px; /* Position below header with some spacing */
-    z-index: 1002;
-    transition: left 0.3s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.sidebar.collapsed ~ .toggle-container,
-.sidebar.collapsed .toggle-container {
-    left: 0;
-}
-
-.toggle-btn {
-    background: var(--primary-color);
-    color: white;
-    border: none;
-    width: 40px;
-    height: 40px;
-    border-radius: 0 8px 8px 0;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+    top: 0;
     transition: all 0.3s ease;
-    outline: none;
-    padding: 0;
-}
-
-.toggle-btn:hover {
-    background: var(--secondary-color);
-    width: 45px;
-}
-
-.toggle-btn:focus {
-    box-shadow: 0 0 0 3px rgba(59, 122, 87, 0.3);
-}
-
-.toggle-btn i {
-    font-size: 20px;
-    transition: transform 0.3s ease;
-}
-
-/* Make sure the toggle icon rotates properly */
-.sidebar.collapsed .toggle-btn i {
-    transform: rotate(180deg);
-}
-
-/* Adjust sidebar transition */
-.sidebar {
-    width: 280px;
-    background: white;
-    height: calc(100vh - 60px); /* Account for header height */
-    position: fixed;
-    left: 0;
-    top: 60px; /* Position below header */
-    transition: transform 0.3s ease, left 0.3s ease;
     z-index: 999;
     padding-top: 15px;
     box-shadow: 2px 0 5px rgba(0,0,0,0.1);
@@ -218,42 +147,59 @@ body {
 }
 
 .sidebar.collapsed {
-    transform: translateX(-280px);
+    left: -280px;
 }
 
-/* Adjust main content */
+/* Main Content */
 .main-content {
-    flex: 1;
     margin-left: 280px;
     padding: 20px;
-    transition: margin-left 0.3s ease;
+    transition: all 0.3s ease;
     min-height: calc(100vh - 60px);
-    margin-top: 60px;
+    margin-top: 80px;
 }
 
 .main-content.expanded {
     margin-left: 0;
 }
 
-
-.section-title h2 {
-    font-size: 2rem;
-    margin-bottom: 50rem;
-    color: var(--primary-color);
-    font-weight: 600;
+/* Section Header with Toggle Button */
+.section-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 2rem;
     position: relative;
-    padding-bottom: 1rem;
-    margin-left: 50px;
-    
 }
+
+.section-header .toggle-btn {
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 15px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    transition: all 0.3s ease;
+}
+
+.section-header .toggle-btn:hover {
+    background: var(--secondary-color);
+    transform: scale(1.05);
+}
+
+/* Section Title Styles */
 .section-title {
-    font-size: 2rem;
-    margin-bottom: 4.5rem;
+    font-size: 1.6rem;
     color: var(--primary-color);
     font-weight: 600;
     position: relative;
-    padding-bottom: 1rem;
-    margin-left: 10px;
+    padding-bottom: 0.8rem;
+    margin: 0;
 }
 
 .section-title::after {
@@ -261,8 +207,8 @@ body {
     position: absolute;
     bottom: 0;
     left: 0;
-    width: 200px;
-    height: 4px;
+    width: 150px;
+    height: 3px;
     background: var(--primary-color);
     border-radius: 2px;
 }
@@ -272,6 +218,7 @@ body {
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 1.5rem;
     padding: 1rem 0;
+    margin-top: 20px;
 }
 
 .product-card {
@@ -488,31 +435,19 @@ body {
 
 .product-availability .unit {
     font-weight: 700;
-    color: #ff5252; /* Highlight unit in red, change as needed */
+    color: #ff5252;
     margin-left: 2px;
 }
 
-/* Responsive adjustments */
+/* Responsive Design */
 @media (max-width: 768px) {
+    .sidebar {
+        left: -280px;
+    }
+    
     .main-content {
-        padding: 1.5rem;
-    }
-    
-    .products-grid {
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: 1.5rem;
-    }
-    
-    .product-card {
-        min-height: 450px;
-    }
-    
-    .product-image {
-        height: 200px;
-    }
-    
-    .product-info {
-        padding: 1.5rem;
+        margin-left: 0;
+        padding: 15px;
     }
 }
 
@@ -713,34 +648,6 @@ body {
     margin-top: 0.5rem;
 }
 
-@media (max-width: 768px) {
-    .sidebar {
-        transform: translateX(-280px);
-    }
-    
-    .toggle-container {
-        left: 0;
-    }
-    
-    .sidebar.active {
-        transform: translateX(0);
-    }
-    
-    .main-content {
-        margin-left: 0;
-        padding: 15px;
-    }
-    
-    .toggle-btn {
-        width: 35px;
-        height: 35px;
-    }
-    
-    .toggle-btn:hover {
-        width: 35px;
-    }
-}
-
 /* Add these styles in the style section */
 .modal-overlay {
     display: none;
@@ -935,7 +842,7 @@ body {
 
 .suggestion-item .item-details {
     flex: 1;
-    min-width: 0; /* Helps with text overflow */
+    min-width: 0;
 }
 
 .suggestion-item .item-name {
@@ -1049,7 +956,7 @@ body {
 }
 
 .cart-modal-header {
-    position: relative; /* Ensure positioning context for the close button */
+    position: relative;
     text-align: center;
     margin-bottom: 1.5rem;
 }
@@ -1190,4 +1097,49 @@ body {
 
 .cart-modal.active {
     animation: modalFadeIn 0.3s ease forwards;
+}
+
+/* Payment Methods Styles */
+.section-description {
+    color: #666;
+    margin-bottom: 30px;
+    font-size: 1rem;
+}
+
+.payment-methods-container {
+    width: 100%;
+    max-width: 800px;
+}
+
+.add-payment-method {
+    border: 2px dashed #ddd;
+    border-radius: 10px;
+    padding: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+    background-color: #f9f9f9;
+    transition: all 0.3s ease;
+}
+
+.add-payment-method:hover {
+    border-color: var(--primary-color);
+    background-color: rgba(59, 122, 87, 0.05);
+}
+
+.add-payment-link {
+    color: var(--primary-color);
+    font-weight: 500;
+    font-size: 1.1rem;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+}
+
+.add-payment-link:hover {
+    color: var(--secondary-color);
+    transform: translateY(-2px);
 }
