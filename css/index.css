@@ -1055,6 +1055,7 @@ input[type="text"]::-ms-clear {
   }
 }
 
+<<<<<<< HEAD
 /* Logout Modal Styles */
 #logoutModal .modal-content {
     background: white;
@@ -1124,4 +1125,17 @@ input[type="text"]::-ms-clear {
 
 .auth-button.logout i {
     font-size: 16px;
+=======
+.auth-button.logout {
+    background-color: #ff4444;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 4px;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+}
+
+.auth-button.logout:hover {
+    background-color: #cc0000;
+>>>>>>> 2211b4f6f7f82ac19a68b05947692b23e6388406
 }

@@ -412,11 +412,6 @@ try {
     <div class="container">
         <!-- Sidebar -->
         <aside class="sidebar">
-            <div class="toggle-container">
-                <button class="toggle-btn" id="sidebarToggle">
-                    <i class="fa-solid fa-bars"></i>
-                </button>
-            </div>
             <div class="user-info">
                 <img src="<?php echo !empty($user['profile_image']) ? '../' . $user['profile_image'] : '../assets/images/default-avatar.jpg'; ?>" 
                      alt="User Avatar" class="user-avatar">
@@ -434,7 +429,7 @@ try {
                 </div>
             </div>
             <ul class="menu-items">
-                <li><a href="#" ><i class="fa-solid fa-bag-shopping"></i> My Orders</a></li>
+                <li><a href="#" class="active"><i class="fa-solid fa-bag-shopping"></i> My Orders</a></li>
                 <li><a href="profile.php"><i class="fa-solid fa-user"></i> Profile</a></li>
                 <li><a href="payment.php"><i class="fa-solid fa-credit-card"></i> Payment Methods</a></li>
                 <li><a href="address.php"><i class="fa-solid fa-location-dot"></i> Delivery Address</a></li>
@@ -449,7 +444,12 @@ try {
 
         <!-- Main Content -->
         <main class="main-content">
-            <h2 class="section-title">All Products</h2>
+            <div class="section-header">
+                <button class="toggle-btn" id="sidebarToggle">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+                <h2 class="section-title">All Products</h2>
+            </div>
             <div class="products-grid">
                 <?php
                 $products_per_page = 12;
@@ -624,14 +624,17 @@ try {
 
     <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Sidebar toggle
+        // Sidebar toggle functionality
         const sidebarToggle = document.getElementById('sidebarToggle');
         const sidebar = document.querySelector('.sidebar');
         const mainContent = document.querySelector('.main-content');
         const toggleIcon = sidebarToggle.querySelector('i');
-        sidebarToggle.addEventListener('click', function() {
+
+        function toggleSidebar() {
             sidebar.classList.toggle('collapsed');
             mainContent.classList.toggle('expanded');
+            
+            // Toggle the icon between bars and times
             if (sidebar.classList.contains('collapsed')) {
                 toggleIcon.classList.remove('fa-bars');
                 toggleIcon.classList.add('fa-times');
@@ -639,14 +642,34 @@ try {
                 toggleIcon.classList.remove('fa-times');
                 toggleIcon.classList.add('fa-bars');
             }
+            
+            // Save sidebar state to localStorage
             localStorage.setItem('sidebarCollapsed', sidebar.classList.contains('collapsed'));
+        }
+
+        sidebarToggle.addEventListener('click', toggleSidebar);
+
+        // Check saved sidebar state on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            const sidebarCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
+            if (sidebarCollapsed) {
+                toggleSidebar();
+            }
+            
+            // Handle initial state for mobile
+            if (window.innerWidth <= 768) {
+                sidebar.classList.add('collapsed');
+                mainContent.classList.add('expanded');
+            }
         });
 
-        // Restore sidebar state
-        if (localStorage.getItem('sidebarCollapsed') === 'true') {
-            sidebar.classList.add('collapsed');
-            mainContent.classList.add('expanded');
-        }
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            if (window.innerWidth <= 768) {
+                sidebar.classList.add('collapsed');
+                mainContent.classList.add('expanded');
+            }
+        });
 
         // Buy Now Modal
         const buyModal = document.getElementById('buyModal');

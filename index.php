@@ -17,6 +17,7 @@ if (session_status() === PHP_SESSION_NONE) {
     <div class="header">
         <div class="logo">FarmFresh 🌱</div>
         <div class="auth-buttons">
+<<<<<<< HEAD
             <?php if(isset($_SESSION['user_id'])): ?>
                 <a id="cart-icon" href="/cart.html" class="cart-button">
                     <span id="cart-count" class="cart-count" style="display: none;">0</span>
@@ -28,6 +29,14 @@ if (session_status() === PHP_SESSION_NONE) {
                 <a id="cart-icon" href="/cart.html" class="cart-button">
                     <span id="cart-count" class="cart-count" style="display: none;">0</span>
                 </a>
+=======
+            <a id="cart-icon" href="/cart.html" class="cart-button">
+                <span id="cart-count" class="cart-count" style="display: none;">0</span>
+            </a>
+            <?php if(isset($_SESSION['user_id'])): ?>
+                <a href="logout.php" class="auth-button logout">Logout</a>
+            <?php else: ?>
+>>>>>>> 2211b4f6f7f82ac19a68b05947692b23e6388406
                 <a href="#" class="auth-button login">Login</a>
                 <a href="#" class="auth-button sign-up">Sign Up</a>
             <?php endif; ?>
