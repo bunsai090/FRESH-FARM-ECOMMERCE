@@ -1,0 +1,545 @@
+/* Profile Page Styles */
+body {
+    background-color: var(--bg-color);
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+.container {
+    display: flex;
+    position: relative;
+    min-height: 100vh;
+    background-color: var(--bg-color);
+}
+
+/* Page Header */
+.page-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.page-header h1 {
+    color: var(--primary-color);
+    font-size: 1.75rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+/* Back Button Styles */
+.back-button {
+    position: fixed;
+    left: calc(350px + 20px); /* Sidebar width (280px) + margin */
+    top: 20px;
+    width: 40px;
+    height: 40px;
+    background: var(--primary-color);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    text-decoration: none;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    z-index: 1000;
+}
+
+
+
+.back-button:hover {
+    transform: translateX(-5px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.back-button i {
+    font-size: 1.2rem;
+}
+
+/* Profile Container Styles */
+.profile-container {
+    max-width: 800px;
+    margin: 0 auto;
+    background: #1a1a1a;
+    border-radius: 24px;
+    padding: 1.2rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    position: relative;
+    margin-top: 0.5rem;
+}
+
+.profile-header {
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+.profile-header h2 {
+    font-size: 1.5rem;
+    color: white;
+    margin-bottom: 0.2rem;
+    font-weight: 600;
+}
+
+.profile-header p {
+    color: #888;
+    font-size: 0.85rem;
+}
+
+/* Form Grid Adjustments */
+.form-grid {
+    display: grid;
+    grid-template-columns: 180px 1fr;
+    gap: 1.5rem;
+    align-items: start;
+}
+
+/* Profile Image Section */
+.profile-image-section {
+    position: sticky;
+    top: 1rem;
+    cursor: pointer;
+}
+
+.profile-image-container {
+    width: 160px;
+    height: 160px;
+    border-radius: 20px;
+    overflow: hidden;
+    position: relative;
+    background: #2a2a2a;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.profile-image-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: all 0.3s ease;
+}
+
+.image-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+    padding: 2rem 1.5rem;
+    color: white;
+    opacity: 0;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.profile-image-container:hover .image-overlay {
+    opacity: 1;
+}
+
+.image-overlay i {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.image-overlay span {
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+/* Form Fields */
+.form-fields {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+}
+
+.input-group {
+    margin-bottom: 0.6rem;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 0.2rem;
+    color: #ddd;
+    font-weight: 500;
+    font-size: 0.8rem;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 0.6rem 0.8rem;
+    border: 2px solid #333;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    background: #2a2a2a;
+    color: white;
+}
+
+.input-group input:focus {
+    border-color: var(--primary-color);
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(59, 122, 87, 0.1);
+}
+
+/* Date picker specific styles */
+.input-group input[type="date"] {
+    background: #2a2a2a;
+    color: white;
+    position: relative;
+}
+
+/* Calendar icon color */
+.input-group input[type="date"]::-webkit-calendar-picker-indicator {
+    background-color: white;
+    padding: 4px;
+    cursor: pointer;
+    border-radius: 4px;
+    filter: invert(1);
+    opacity: 0.8;
+    transition: opacity 0.2s;
+}
+
+.input-group input[type="date"]::-webkit-calendar-picker-indicator:hover {
+    opacity: 1;
+}
+
+/* Date picker popup styles */
+::-webkit-datetime-edit-fields-wrapper {
+    color: white;
+}
+::-webkit-datetime-edit-text {
+    color: white;
+    padding: 0 0.3em;
+}
+::-webkit-datetime-edit-month-field {
+    color: white;
+}
+::-webkit-datetime-edit-day-field {
+    color: white;
+}
+::-webkit-datetime-edit-year-field {
+    color: white;
+}
+::-webkit-calendar-picker-indicator {
+    background-color: white;
+}
+
+/* Firefox specific styles */
+.input-group input[type="date"]::-moz-calendar-picker-indicator {
+    background-color: white;
+    padding: 4px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+/* Form Actions */
+.form-actions {
+    margin-top: 1rem;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.save-changes-btn {
+    padding: 0.6rem 1.2rem;
+    font-size: 0.85rem;
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+/* Alert Styles */
+.alert {
+    padding: 1rem 1.5rem;
+    border-radius: 12px;
+    margin-bottom: 2rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    animation: slideDown 0.3s ease;
+}
+
+.alert-success {
+    background: rgba(40, 167, 69, 0.1);
+    border: 2px solid rgba(40, 167, 69, 0.2);
+    color: #28a745;
+}
+
+.alert-error {
+    background: rgba(220, 53, 69, 0.1);
+    border: 2px solid rgba(220, 53, 69, 0.2);
+    color: #dc3545;
+}
+
+@keyframes slideDown {
+    from {
+        transform: translateY(-10px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .profile-container {
+        margin: 0.5rem;
+        padding: 1rem;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .profile-image-section {
+        max-width: 140px;
+        margin: 0 auto;
+    }
+
+    .profile-image-container {
+        width: 140px;
+        height: 140px;
+    }
+
+    .back-button {
+        position: fixed;
+        left: 20px;
+        top: 20px;
+        width: 35px;
+        height: 35px;
+    }
+
+    .sidebar.collapsed + .main-content .back-button {
+        left: 20px;
+    }
+}
+
+/* Adjust back button when sidebar is collapsed */
+.sidebar.collapsed + .main-content .back-button {
+    left: 60px;
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+    .profile-container {
+        background: #1a1a1a;
+    }
+
+    .profile-header h2 {
+        color: #fff;
+    }
+
+    .profile-header p {
+        color: #888;
+    }
+
+    .input-group label {
+        color: #ddd;
+    }
+
+    .input-group input {
+        background: #2a2a2a;
+        border-color: #333;
+        color: #fff;
+    }
+
+    .input-group input:focus {
+        background: #2d2d2d;
+        border-color: var(--primary-color);
+    }
+
+    .input-group input:hover {
+        border-color: #444;
+    }
+
+    .back-button {
+        background: #2a2a2a;
+    }
+}
+
+/* Main Content Adjustments */
+.main-content {
+    flex: 1;
+    margin-left: 280px;
+    padding: 0.5rem 1.5rem;
+    transition: all 0.3s ease;
+    background-color: var(--bg-color);
+    max-width: 1000px;
+    height: 100vh;
+}
+
+.main-content.expanded {
+    margin-left: 0;
+}
+
+/* Sidebar Styles */
+.sidebar {
+    width: 280px;
+    background: white;
+    height: 100vh;
+    position: fixed;
+    left: 0;
+    top: 0;
+    transition: all 0.3s ease;
+    z-index: 999;
+    padding-top: 15px;
+    box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+    overflow-y: auto;
+}
+
+.sidebar.collapsed {
+    left: -280px;
+}
+
+.toggle-container {
+    position: fixed;
+    left: 280px;
+    top: 20px;
+    z-index: 1002;
+    transition: all 0.3s ease;
+}
+
+.sidebar.collapsed .toggle-container {
+    left: 0;
+}
+
+.toggle-btn {
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 0 8px 8px 0;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+}
+
+.toggle-btn:hover {
+    background: var(--secondary-color);
+    width: 45px;
+}
+
+.toggle-btn i {
+    font-size: 20px;
+    transition: transform 0.3s ease;
+}
+
+/* User Info Styles */
+.user-info {
+    text-align: center;
+    padding: 1.5rem 1rem;
+    border-bottom: 1px solid #eee;
+    margin-top: 20px;
+}
+
+.user-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    margin-bottom: 0.75rem;
+    object-fit: cover;
+    border: 3px solid var(--primary-color);
+    padding: 2px;
+    background: white;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.user-info h3 {
+    font-size: 1rem;
+    margin-bottom: 0.25rem;
+    color: var(--text-color);
+}
+
+.user-info p {
+    font-size: 0.85rem;
+    color: #666;
+    margin-bottom: 1rem;
+}
+
+.user-stats {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    margin-top: 0.75rem;
+    padding: 0.75rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+
+.stat {
+    text-align: center;
+}
+
+.stat-number {
+    font-weight: 600;
+    color: var(--primary-color);
+    font-size: 1.1rem;
+}
+
+.stat-label {
+    font-size: 0.75rem;
+    color: #666;
+    margin-top: 0.25rem;
+}
+
+/* Menu Items Styles */
+.menu-items {
+    list-style: none;
+    padding: 0.75rem;
+}
+
+.menu-items li {
+    margin-bottom: 0.25rem;
+}
+
+.menu-items a {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.6rem 0.75rem;
+    color: var(--text-color);
+    text-decoration: none;
+    border-radius: 5px;
+    transition: all 0.3s;
+    font-size: 0.9rem;
+}
+
+.menu-items a:hover {
+    background-color: rgba(59, 122, 87, 0.1);
+    color: var(--primary-color);
+}
+
+.menu-items i {
+    width: 16px;
+    text-align: center;
+    font-size: 0.95rem;
+}
+
+.menu-items a.active {
+    background-color: rgba(59, 122, 87, 0.1);
+    color: var(--primary-color);
+    font-weight: 500;
+}
+
+.menu-items .logout-link {
+    color: #ff4444;
+    margin-top: 0.5rem;
+}
+
+.menu-items .logout-link:hover {
+    background-color: rgba(255, 68, 68, 0.1);
+} 

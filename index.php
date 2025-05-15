@@ -17,11 +17,20 @@ if (session_status() === PHP_SESSION_NONE) {
     <div class="header">
         <div class="logo">FarmFresh 🌱</div>
         <div class="auth-buttons">
-            <a id="cart-icon" href="/cart.html" class="cart-button">
-                <span id="cart-count" class="cart-count" style="display: none;">0</span>
-            </a>
-            <a href="#" class="auth-button login">Login</a>
-            <a href="#" class="auth-button sign-up">Sign Up</a>
+            <?php if(isset($_SESSION['user_id'])): ?>
+                <a id="cart-icon" href="/cart.html" class="cart-button">
+                    <span id="cart-count" class="cart-count" style="display: none;">0</span>
+                </a>
+                <a href="#" class="auth-button logout" onclick="showLogoutModal(); return false;">
+                    <i class="fa fa-sign-out"></i> Logout
+                </a>
+            <?php else: ?>
+                <a id="cart-icon" href="/cart.html" class="cart-button">
+                    <span id="cart-count" class="cart-count" style="display: none;">0</span>
+                </a>
+                <a href="#" class="auth-button login">Login</a>
+                <a href="#" class="auth-button sign-up">Sign Up</a>
+            <?php endif; ?>
         </div>
     </div>
 
@@ -57,11 +66,14 @@ if (session_status() === PHP_SESSION_NONE) {
             <div id="login-success" style="display: none;"></div>
             
             <div class="input-group">
+              <span class="input-icon"><i class="fa fa-envelope"></i></span>
               <input type="email" name="email" id="login-email" placeholder="Email address" required>
             </div>
             
             <div class="input-group">
-              <input type="password" name="password" id="login-password" placeholder="Password" required>
+              <span class="input-icon"><i class="fa fa-lock"></i></span>
+              <input type="password" name="password" id="login-password" placeholder="Password" required autocomplete="current-password">
+              <span class="toggle-password" data-target="login-password"><i class="fa fa-eye"></i></span>
             </div>
             
             <label><input type="checkbox" name="remember"> Remember me</label>
@@ -82,27 +94,35 @@ if (session_status() === PHP_SESSION_NONE) {
 
             <div class="name-fields">
               <div class="input-group">
+                <span class="input-icon"><i class="fa fa-user"></i></span>
                 <input type="text" name="first_name" id="first_name" placeholder="First Name" required>
               </div>
               <div class="input-group">
+                <span class="input-icon"><i class="fa fa-user"></i></span>
                 <input type="text" name="last_name" id="last_name" placeholder="Last Name" required>
               </div>
             </div>
 
             <div class="input-group">
+              <span class="input-icon"><i class="fa fa-envelope"></i></span>
               <input type="email" name="email" id="email" placeholder="Email address" required>
             </div>
 
             <div class="input-group">
+              <span class="input-icon"><i class="fa fa-phone"></i></span>
               <input type="tel" name="phone_number" id="phone_number" placeholder="Phone Number" required>
             </div>
 
             <div class="input-group">
-              <input type="password" name="password" id="password" placeholder="Password" required>
+              <span class="input-icon"><i class="fa fa-lock"></i></span>
+              <input type="password" name="password" id="password" placeholder="Password" required autocomplete="new-password">
+              <span class="toggle-password" data-target="password"><i class="fa fa-eye"></i></span>
             </div>
 
             <div class="input-group">
-              <input type="password" name="confirm_password" id="confirm_password" placeholder="Confirm Password" required>
+              <span class="input-icon"><i class="fa fa-lock"></i></span>
+              <input type="password" name="confirm_password" id="confirm_password" placeholder="Confirm Password" required autocomplete="new-password">
+              <span class="toggle-password" data-target="confirm_password"><i class="fa fa-eye"></i></span>
             </div>
 
             <button type="submit" class="signup-button">Create Account</button>
@@ -111,17 +131,18 @@ if (session_status() === PHP_SESSION_NONE) {
       </div>
     </div>
 
-    <!-- Navigation Categories -->
-    <div class="nav-categories">
-        <a href="/index.html" class="category">Home</a>
-        <a href="/fruits-category/fruits.html" class="category">Fruits 🍎</a>
-        <a href="/vegatable-category/vegetable.html" class="category">Vegetables 🥦</a>
-        <a href="/dairy-category/dairy.html" class="category">Dairy 🥛</a>
-        <a href="/meat-category/meat.html" class="category">Meat 🥩</a>
-        <a href="/organic-category/organic.html" class="category">Organic 🌿</a>
-        <a href="/bakery-category/bakery.html" class="category">Bakery 🍞</a>
+    <!-- Logout Confirmation Modal -->
+    <div id="logoutModal" class="modal-overlay" style="display: none;">
+        <div class="modal-content">
+            <h2>Confirm Logout</h2>
+            <p>Are you sure you want to logout?</p>
+            <div class="modal-buttons">
+                <button onclick="logout()" class="confirm-logout">Yes, Logout</button>
+                <button onclick="closeLogoutModal()" class="cancel-logout">Cancel</button>
+            </div>
+        </div>
     </div>
-    
+
     <!-- Hero Banner -->
     <div class="hero-banner">
         <h1 class="hero-title">Fresh Produce Delivered to Your Doorstep</h1>
@@ -162,6 +183,40 @@ if (session_status() === PHP_SESSION_NONE) {
       const showLogin = document.getElementById('showLogin');
       const showSignup = document.getElementById('showSignup');
       
+      // Function to show auth modal
+      function showAuthModal(tab = 'login') {
+        const modal = document.getElementById('authModal');
+        const loginForm = document.getElementById('loginForm');
+        const signupForm = document.getElementById('signupForm');
+        const showLogin = document.getElementById('showLogin');
+        const showSignup = document.getElementById('showSignup');
+        
+        modal.style.display = 'flex';
+        
+        if (tab === 'login') {
+          loginForm.style.display = 'flex';
+          signupForm.style.display = 'none';
+          showLogin.classList.add('active-tab');
+          showSignup.classList.remove('active-tab');
+        } else {
+          loginForm.style.display = 'none';
+          signupForm.style.display = 'flex';
+          showSignup.classList.add('active-tab');
+          showLogin.classList.remove('active-tab');
+        }
+      }
+
+      // Event listeners for login/signup buttons
+      document.querySelector('.login').addEventListener('click', function(e) {
+        e.preventDefault();
+        showAuthModal('login');
+      });
+
+      document.querySelector('.sign-up').addEventListener('click', function(e) {
+        e.preventDefault();
+        showAuthModal('signup');
+      });
+      
       // Show modal
       loginBtn.addEventListener('click', (e) => {
         e.preventDefault();
@@ -193,7 +248,33 @@ if (session_status() === PHP_SESSION_NONE) {
         showSignup.classList.add('active-tab');
         showLogin.classList.remove('active-tab');
       };
-      
+
+      // Password visibility toggle functionality
+      document.addEventListener('DOMContentLoaded', function() {
+        const toggleButtons = document.querySelectorAll('.toggle-password');
+        
+        toggleButtons.forEach(button => {
+          button.addEventListener('click', function(e) {
+            e.preventDefault(); // Prevent default button behavior
+            e.stopPropagation(); // Stop event propagation
+            
+            const targetId = this.getAttribute('data-target');
+            const passwordInput = document.getElementById(targetId);
+            
+            // Toggle password visibility
+            if (passwordInput.type === 'password') {
+              passwordInput.type = 'text';
+              this.querySelector('i').classList.remove('fa-eye');
+              this.querySelector('i').classList.add('fa-eye-slash');
+            } else {
+              passwordInput.type = 'password';
+              this.querySelector('i').classList.remove('fa-eye-slash');
+              this.querySelector('i').classList.add('fa-eye');
+            }
+          });
+        });
+      });
+
       // Bottom Product Carousel with Database Connection
       document.addEventListener('DOMContentLoaded', function() {
         const carousel = document.getElementById('bottom-product-carousel');
@@ -326,23 +407,6 @@ if (session_status() === PHP_SESSION_NONE) {
             // Add new messages at the beginning of the forms
             loginForm.insertBefore(loginMessage.cloneNode(true), loginForm.firstChild);
             signupForm.insertBefore(loginMessage.cloneNode(true), signupForm.firstChild);
-          }
-        }
-        
-        // Function to show auth modal
-        function showAuthModal(tab = 'login') {
-          modal.style.display = 'flex';
-          
-          if (tab === 'login') {
-            loginForm.style.display = 'flex';
-            signupForm.style.display = 'none';
-            showLogin.classList.add('active-tab');
-            showSignup.classList.remove('active-tab');
-          } else {
-            loginForm.style.display = 'none';
-            signupForm.style.display = 'flex';
-            showSignup.classList.add('active-tab');
-            showLogin.classList.remove('active-tab');
           }
         }
         
@@ -664,40 +728,36 @@ if (session_status() === PHP_SESSION_NONE) {
         }
       });
 
+      function showLogoutModal() {
+        document.getElementById('logoutModal').style.display = 'flex';
+      }
 
-      // Function to show auth modal
-function showAuthModal(tab = 'login') {
-  const modal = document.getElementById('authModal');
-  const loginForm = document.getElementById('loginForm');
-  const signupForm = document.getElementById('signupForm');
-  const showLogin = document.getElementById('showLogin');
-  const showSignup = document.getElementById('showSignup');
-  
-  modal.style.display = 'flex';
-  
-  if (tab === 'login') {
-    loginForm.style.display = 'flex';
-    signupForm.style.display = 'none';
-    showLogin.classList.add('active-tab');
-    showSignup.classList.remove('active-tab');
-  } else {
-    loginForm.style.display = 'none';
-    signupForm.style.display = 'flex';
-    showSignup.classList.add('active-tab');
-    showLogin.classList.remove('active-tab');
-  }
-}
+      function closeLogoutModal() {
+        document.getElementById('logoutModal').style.display = 'none';
+      }
 
-// Event listeners for login/signup buttons
-document.querySelector('.login').addEventListener('click', function(e) {
-  e.preventDefault();
-  showAuthModal('login');
-});
+      function logout() {
+        // Send request to logout.php
+        fetch('logout.php')
+        .then(response => response.json())
+        .then(data => {
+            if (data.status) {
+                // Redirect to home page after successful logout
+                window.location.href = 'index.php';
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+      }
 
-document.querySelector('.sign-up').addEventListener('click', function(e) {
-  e.preventDefault();
-  showAuthModal('signup');
-});
+      // Close modal when clicking outside
+      window.onclick = function(event) {
+        const logoutModal = document.getElementById('logoutModal');
+        if (event.target == logoutModal) {
+          closeLogoutModal();
+        }
+      }
     </script>
 </body>
 </html>
