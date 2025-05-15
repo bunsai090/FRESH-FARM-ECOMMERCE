@@ -20,8 +20,12 @@ if (session_status() === PHP_SESSION_NONE) {
             <a id="cart-icon" href="/cart.html" class="cart-button">
                 <span id="cart-count" class="cart-count" style="display: none;">0</span>
             </a>
-            <a href="#" class="auth-button login">Login</a>
-            <a href="#" class="auth-button sign-up">Sign Up</a>
+            <?php if(isset($_SESSION['user_id'])): ?>
+                <a href="logout.php" class="auth-button logout">Logout</a>
+            <?php else: ?>
+                <a href="#" class="auth-button login">Login</a>
+                <a href="#" class="auth-button sign-up">Sign Up</a>
+            <?php endif; ?>
         </div>
     </div>
 
