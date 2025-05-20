@@ -223,7 +223,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </div>
             </div>
             <ul class="menu-items">
-                <li><a href="user.php"><i class="fa-solid fa-bag-shopping"></i> My Orders</a></li>
+                <li><a href="orders.php"><i class="fa-solid fa-bag-shopping"></i> My Orders</a></li>
                 <li><a href="profile.php" ><i class="fa-solid fa-user"></i> Profile</a></li>
                 <li><a href="payment.php"><i class="fa-solid fa-credit-card"></i> Payment Methods</a></li>
                 <li><a href="address.php"><i class="fa-solid fa-location-dot"></i> Delivery Address</a></li>

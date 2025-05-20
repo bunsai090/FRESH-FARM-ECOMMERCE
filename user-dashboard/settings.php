@@ -39,92 +39,6 @@ $stmt->bind_param("i", $user_id);
 $stmt->execute();
 $result = $stmt->get_result();
 $user = $result->fetch_assoc();
-
-// Get user's order count
-$orderCount = 0;
-try {
-    $orderStmt = $conn->prepare("SELECT COUNT(*) as order_count FROM orders WHERE user_id = ?");
-    $orderStmt->bind_param("i", $user_id);
-    $orderStmt->execute();
-    $orderResult = $orderStmt->get_result();
-    $orderCount = $orderResult->fetch_assoc()['order_count'];
-} catch (Exception $e) {
-    error_log("Error getting order count: " . $e->getMessage());
-}
-
-// Get user's favorites count
-$favoriteCount = 0;
-try {
-    $favoriteStmt = $conn->prepare("SELECT COUNT(*) as favorite_count FROM favorites WHERE user_id = ?");
-    $favoriteStmt->bind_param("i", $user_id);
-    $favoriteStmt->execute();
-    $favoriteResult = $favoriteStmt->get_result();
-    $favoriteCount = $favoriteResult->fetch_assoc()['favorite_count'];
-} catch (Exception $e) {
-    error_log("Error getting favorite count: " . $e->getMessage());
-}
-
-// Handle profile update
-$message = '';
-$messageType = '';
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $firstName = $_POST['first_name'];
-    $lastName = $_POST['last_name'];
-    $phone = !empty($_POST['phone']) ? $_POST['phone'] : null;
-    $birthDate = !empty($_POST['birth_date']) ? $_POST['birth_date'] : null;
-
-    // Handle file upload
-    if (isset($_FILES['profile_image']) && $_FILES['profile_image']['error'] === 0) {
-        $allowed = ['jpg', 'jpeg', 'png', 'gif'];
-        $filename = $_FILES['profile_image']['name'];
-        $filetype = pathinfo($filename, PATHINFO_EXTENSION);
-        
-        if (in_array(strtolower($filetype), $allowed)) {
-            $tempname = $_FILES['profile_image']['tmp_name'];
-            $folder = "../uploads/profile_images/";
-            
-            // Create directory if it doesn't exist
-            if (!file_exists($folder)) {
-                mkdir($folder, 0777, true);
-            }
-
-            // Delete previous profile image if exists
-            if (!empty($user['profile_image']) && file_exists('../' . $user['profile_image'])) {
-                unlink('../' . $user['profile_image']);
-            }
-            
-            // Generate unique filename
-            $new_filename = "profile_" . $user_id . "_" . time() . "." . $filetype;
-            $filepath = $folder . $new_filename;
-            
-            if (move_uploaded_file($tempname, $filepath)) {
-                // Update database with new image path
-                $relative_path = "uploads/profile_images/" . $new_filename;
-                $updateStmt = $conn->prepare("UPDATE users SET profile_image = ? WHERE user_id = ?");
-                $updateStmt->bind_param("si", $relative_path, $user_id);
-                $updateStmt->execute();
-            }
-        }
-    }
-
-    // Update user information - update both phone and phone_number fields for compatibility
-    $updateStmt = $conn->prepare("UPDATE users SET first_name = ?, last_name = ?, phone = ?, phone_number = ?, birth_date = ? WHERE user_id = ?");
-    $updateStmt->bind_param("sssssi", $firstName, $lastName, $phone, $phone, $birthDate, $user_id);
-    
-    if ($updateStmt->execute()) {
-        $message = "Profile updated successfully!";
-        $messageType = "success";
-        
-        // Refresh user data
-        $stmt->execute();
-        $result = $stmt->get_result();
-        $user = $result->fetch_assoc();
-    } else {
-        $message = "Error updating profile. Please try again.";
-        $messageType = "error";
-    }
-}
 ?>
 
 <!DOCTYPE html>
@@ -132,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profile - FarmFresh</title>
+    <title>Account Settings - FarmFresh</title>
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <!-- Google Fonts -->
@@ -140,6 +54,41 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link rel="stylesheet" href="../css/user.css">
     <link rel="stylesheet" href="../css/settings.css">
     <style>
+        /* Page-specific overrides to fix layout issues */
+        .main-content {
+            margin-left: 280px !important;
+            padding: 1rem 2rem !important;
+            flex: 1 1 auto !important;
+            max-width: calc(100% - 280px) !important;
+            min-height: 100vh !important;
+            box-sizing: border-box !important;
+            overflow-x: visible !important;
+            overflow-y: visible !important;
+        }
+        
+        .main-content.expanded {
+            margin-left: 0 !important;
+            max-width: 100% !important;
+        }
+        
+        .settings-container {
+            width: 100% !important;
+            max-width: 700px !important;
+            margin: 20px auto !important;
+            box-sizing: border-box !important;
+        }
+        
+        .password-input-container {
+            width: 100% !important;
+            position: relative !important;
+            display: block !important;
+        }
+        
+        .password-input-container input {
+            width: 100% !important;
+            box-sizing: border-box !important;
+        }
+        
         .phone-input-container {
             position: relative;
         }
@@ -198,7 +147,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </style>
 </head>
 <body>
-    < class="container">
+    <div class="container">
         <!-- Sidebar -->
         <aside class="sidebar">
             <div class="toggle-container">
@@ -223,29 +172,83 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </div>
             </div>
             <ul class="menu-items">
-                <li><a href="user.php"><i class="fa-solid fa-bag-shopping"></i> My Orders</a></li>
+                <li><a href="orders.php"><i class="fa-solid fa-bag-shopping"></i> My Orders</a></li>
                 <li><a href="profile.php"><i class="fa-solid fa-user"></i> Profile</a></li>
                 <li><a href="payment.php"><i class="fa-solid fa-credit-card"></i> Payment Methods</a></li>
                 <li><a href="address.php"><i class="fa-solid fa-location-dot"></i> Delivery Address</a></li>
                 <li><a href="favorite.php"><i class="fa-solid fa-heart"></i> Favorites</a></li>
                 <li><a href="#" class="active"><i class="fa-solid fa-gear"></i> Account Settings</a></li>
                 <li><a href="contact.php"><i class="fa-solid fa-phone"></i> Contact Us</a></li>
-                <li><a href="#" onclick="showLogoutModal(); return false;" class="logout-link">
-                    <i class="fa-solid fa-right-from-bracket"></i> Logout
-                </a></li>
+                <li><a href="#" onclick="showLogoutModal(); return false;"><i class="fa-solid fa-right-from-bracket"></i> Logout</a></li>
             </ul>
         </aside>
+        <main class="main-content" style="margin-top: -10px !important; padding-top: 0 !important;">
+            <a href="user.php" class="back-button" style="background-color:rgb(0, 0, 0) !important; color: #3b7a57 !important; border: none !important; box-shadow: 0 2px 6px rgba(0,0,0,0.3) !important; top: 10px !important; margin-top: 10px !important;">
+                <i class="fa fa-arrow-left" aria-hidden="true"></i>
+            </a>
 
-        <!-- Main Content -->
-        <main class="main-content">
-        <a href="user.php" class="back-button">
-        <i class="fa fa-arrow-left" aria-hidden="true"></i>
-    </a>
+            <div class="settings-container" style="background-color: #1e1e1e !important; border-radius: 16px !important; box-shadow: 0 8px 25px rgba(23, 10, 10, 0.25) !important; padding: 0 !important; width: 100% !important; max-width: 700px !important; margin: 15px auto !important; overflow: hidden !important;">
+                <div class="tabs" style="display: flex !important; border-bottom: 1px solid #2d2d2d !important; background-color: #1a1a1a !important;">
+                    <button class="tab-link active" onclick="openTab(event, 'security')" style="padding: 20px 25px !important; font-size: 16px !important; font-weight: 500 !important; color: #3b7a57 !important; background: none !important; border: none !important; cursor: pointer !important; position: relative !important; transition: color 0.3s !important; letter-spacing: 0.5px !important;">Security<span style="position: absolute; bottom: -1px; left: 0; width: 100%; height: 2px; background-color: #3b7a57;"></span></button>
+                    <button class="tab-link" onclick="openTab(event, 'notifications')" style="padding: 20px 25px !important; font-size: 16px !important; font-weight: 500 !important; color: #888 !important; background: none !important; border: none !important; cursor: pointer !important; position: relative !important; transition: color 0.3s !important; letter-spacing: 0.5px !important;">Notifications</button>
+                </div>
 
-           
-            
+                <div id="security" class="tab-content" style="display: block; padding: 35px !important; background-color: #1e1e1e !important; color: #f0f0f0 !important;">
+                    <h3 style="font-size: 24px !important; color: #ffffff !important; margin-bottom: 30px !important; font-weight: 500 !important;">Change Password</h3>
+                    
+                    <?php if (!empty($message)): ?>
+                        <div class="alert alert-<?php echo $messageType === 'success' ? 'success' : 'error'; ?>" 
+                             style="padding: 12px 20px !important; border-radius: 8px !important; margin-bottom: 25px !important; 
+                                   background-color: <?php echo $messageType === 'success' ? 'rgba(40, 167, 69, 0.1)' : 'rgba(220, 53, 69, 0.1)'; ?> !important;
+                                   border: 2px solid <?php echo $messageType === 'success' ? 'rgba(40, 167, 69, 0.2)' : 'rgba(220, 53, 69, 0.2)'; ?> !important;
+                                   color: <?php echo $messageType === 'success' ? '#28a745' : '#dc3545'; ?> !important;
+                                   display: flex !important; align-items: center !important; gap: 12px !important;">
+                            <i class="fas fa-<?php echo $messageType === 'success' ? 'check-circle' : 'exclamation-circle'; ?>"></i>
+                            <?php echo $message; ?>
+                        </div>
+                    <?php endif; ?>
+                    
+                    <form action="" method="POST" id="passwordChangeForm" style="width: 100% !important;">
+                        <input type="hidden" name="form_type" value="password_change">
+                        <div class="input-group" style="margin-bottom: 25px !important; width: 100% !important;">
+                            <label for="current_password" style="display: block !important; margin-bottom: 10px !important; color: #999 !important; font-weight: 500 !important; font-size: 15px !important; letter-spacing: 0.2px !important;">Current Password</label>
+                            <div class="password-input-container" style="position: relative !important; width: 100% !important;">
+                                <input type="password" id="current_password" name="current_password" placeholder="Enter current password" required style="width: 100% !important; padding: 14px 16px !important; font-size: 15px !important; border: none !important; border-radius: 8px !important; background: #2a2a2a !important; color: #f0f0f0 !important; box-sizing: border-box !important;">
+                                <span class="password-toggle" style="position: absolute !important; right: 12px !important; top: 50% !important; transform: translateY(-50%) !important; color: #777 !important; cursor: pointer !important;"><i class="fas fa-eye"></i></span>
+                            </div>
+                        </div>
+                        <div class="input-group" style="margin-bottom: 25px !important; width: 100% !important;">
+                            <label for="new_password" style="display: block !important; margin-bottom: 10px !important; color: #999 !important; font-weight: 500 !important; font-size: 15px !important; letter-spacing: 0.2px !important;">New Password</label>
+                            <div class="password-input-container" style="position: relative !important; width: 100% !important;">
+                                <input type="password" id="new_password" name="new_password" placeholder="Enter new password" required style="width: 100% !important; padding: 14px 16px !important; font-size: 15px !important; border: none !important; border-radius: 8px !important; background: #2a2a2a !important; color: #f0f0f0 !important; box-sizing: border-box !important;">
+                                <span class="password-toggle" style="position: absolute !important; right: 12px !important; top: 50% !important; transform: translateY(-50%) !important; color: #777 !important; cursor: pointer !important;"><i class="fas fa-eye"></i></span>
+                            </div>
+                        </div>
+                        <div class="input-group" style="margin-bottom: 30px !important; width: 100% !important;">
+                            <label for="confirm_new_password" style="display: block !important; margin-bottom: 10px !important; color: #999 !important; font-weight: 500 !important; font-size: 15px !important; letter-spacing: 0.2px !important;">Confirm New Password</label>
+                            <div class="password-input-container" style="position: relative !important; width: 100% !important;">
+                                <input type="password" id="confirm_new_password" name="confirm_new_password" placeholder="Confirm new password" required style="width: 100% !important; padding: 14px 16px !important; font-size: 15px !important; border: none !important; border-radius: 8px !important; background: #2a2a2a !important; color: #f0f0f0 !important; box-sizing: border-box !important;">
+                                <span class="password-toggle" style="position: absolute !important; right: 12px !important; top: 50% !important; transform: translateY(-50%) !important; color: #777 !important; cursor: pointer !important;"><i class="fas fa-eye"></i></span>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary" style="padding: 14px 28px !important; font-size: 15px !important; font-weight: 500 !important; border-radius: 8px !important; cursor: pointer !important; transition: all 0.2s !important; border: none !important; background-color: #3b7a57 !important; color: #fff !important; letter-spacing: 0.5px !important;">Update Password</button>
+                    </form>
+
+                    <hr style="border: none !important; border-top: 1px solid #2d2d2d !important; margin: 40px 0 !important;">
+
+                    <div class="danger-zone" style="margin-top: 20px !important;">
+                        <h3 style="color: #e74c3c !important; font-size: 20px !important; margin-bottom: 20px !important; font-weight: 500 !important; letter-spacing: 0.2px !important;">Danger Zone</h3>
+                        <button class="btn btn-danger" style="padding: 12px 24px !important; font-size: 15px !important; font-weight: 500 !important; border-radius: 8px !important; cursor: pointer !important; transition: all 0.2s !important; border: none !important; background-color: rgba(231, 76, 60, 0.2) !important; color: #e74c3c !important; letter-spacing: 0.5px !important;">Delete Account</button>
+                    </div>
+                </div>
+
+                <div id="notifications" class="tab-content" style="display: none; padding: 35px !important; background-color: #1e1e1e !important; color: #f0f0f0 !important;">
+                    <h3 style="font-size: 24px !important; color: #ffffff !important; margin-bottom: 30px !important; font-weight: 500 !important;">Notifications</h3>
+                    <p style="color: #888 !important; font-size: 15px !important; line-height: 1.6 !important;">Notification settings will go here.</p>
+                </div>
+            </div>
         </main>
-    
+    </div>
 
     <!-- Logout Modal -->
     <div class="modal-overlay" id="logoutModal">
@@ -421,6 +424,55 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         });
 
+        // Tab functionality
+        function openTab(evt, tabName) {
+            // Hide all tab contents
+            var tabcontent = document.getElementsByClassName("tab-content");
+            for (var i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+            }
+
+            // Remove active class and indicator from all tab links
+            var tablinks = document.getElementsByClassName("tab-link");
+            for (var i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+                tablinks[i].style.color = "#888";
+                
+                // Remove any existing indicator spans
+                var spans = tablinks[i].getElementsByTagName("span");
+                while (spans.length > 0) {
+                    spans[0].parentNode.removeChild(spans[0]);
+                }
+            }
+
+            // Show the current tab and add active class to the button
+            document.getElementById(tabName).style.display = "block";
+            evt.currentTarget.className += " active";
+            evt.currentTarget.style.color = "#3b7a57";
+            
+            // Add indicator to active tab
+            var indicator = document.createElement("span");
+            indicator.style.position = "absolute";
+            indicator.style.bottom = "-1px";
+            indicator.style.left = "0";
+            indicator.style.width = "100%";
+            indicator.style.height = "2px";
+            indicator.style.backgroundColor = "#3b7a57";
+            evt.currentTarget.appendChild(indicator);
+        }
+
+        // Password visibility toggle
+        const passwordToggles = document.querySelectorAll('.password-toggle');
+        passwordToggles.forEach(toggle => {
+            toggle.addEventListener('click', function() {
+                const passwordInput = this.previousElementSibling;
+                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordInput.setAttribute('type', type);
+                this.querySelector('i').classList.toggle('fa-eye');
+                this.querySelector('i').classList.toggle('fa-eye-slash');
+            });
+        });
+
         // Phone number formatting and validation
         const phoneInput = document.getElementById('phone');
         const phoneError = document.querySelector('.phone-error-message');
@@ -483,8 +535,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Prevent backspace from deleting +63 prefix
             if (e.key === 'Backspace' && selectionStart <= 3) {
                 e.preventDefault();
-            }
-        });
-    </script>
-</body>
-</html> 
+            }         });     </script>/</body>
+</html></html>

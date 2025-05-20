@@ -14,10 +14,17 @@ body {
 
 /* Page Header */
 .page-header {
+    position: fixed;
+    top: 0;
+    left: 280px;
+    right: 0;
+    height: 70px;
+    background: var(--bg-color);
+    z-index: 998;
     display: flex;
     align-items: center;
-    gap: 1rem;
-    margin-bottom: 2rem;
+    padding: 0 2rem;
+    transition: all 0.3s ease;
 }
 
 .page-header h1 {
@@ -29,32 +36,34 @@ body {
 
 /* Back Button Styles */
 .back-button {
-    position: fixed;
-    left: calc(350px + 20px); /* Sidebar width (280px) + margin */
-    top: 20px;
     width: 40px;
     height: 40px;
-    background: var(--primary-color);
+    background: #45935b;
     border-radius: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
     color: white;
     text-decoration: none;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 15px rgba(69, 147, 91, 0.2);
     transition: all 0.3s ease;
-    z-index: 1000;
+    margin-left: 75px;
+    margin-top: 20px;
 }
-
-
 
 .back-button:hover {
     transform: translateX(-5px);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    background: #367347;
+    box-shadow: 0 4px 20px rgba(69, 147, 91, 0.3);
 }
 
 .back-button i {
     font-size: 1.2rem;
+}
+
+/* Adjust header when sidebar is collapsed */
+.sidebar.collapsed + .page-header {
+    left: 0;
 }
 
 /* Profile Container Styles */
@@ -66,7 +75,8 @@ body {
     padding: 1.2rem;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
     position: relative;
-    margin-top: 0.5rem;
+    margin-top: 1rem;
+    
 }
 
 .profile-header {
@@ -82,7 +92,7 @@ body {
 }
 
 .profile-header p {
-    color: #888;
+    color: #aaaaaa;
     font-size: 0.85rem;
 }
 
@@ -162,7 +172,7 @@ body {
 .input-group label {
     display: block;
     margin-bottom: 0.2rem;
-    color: #ddd;
+    color: #ffffff;
     font-weight: 500;
     font-size: 0.8rem;
 }
@@ -311,16 +321,19 @@ body {
         height: 140px;
     }
 
+    .page-header {
+        left: 0;
+        padding: 0 1rem;
+    }
+
     .back-button {
-        position: fixed;
-        left: 20px;
-        top: 20px;
         width: 35px;
         height: 35px;
     }
 
-    .sidebar.collapsed + .main-content .back-button {
-        left: 20px;
+    .main-content {
+        margin-left: 0;
+        padding: 1rem;
     }
 }
 
@@ -340,11 +353,11 @@ body {
     }
 
     .profile-header p {
-        color: #888;
+        color: #aaaaaa;
     }
 
     .input-group label {
-        color: #ddd;
+        color: #ffffff;
     }
 
     .input-group input {
@@ -371,11 +384,12 @@ body {
 .main-content {
     flex: 1;
     margin-left: 280px;
-    padding: 0.5rem 1.5rem;
+    padding: 2rem 1.5rem;
     transition: all 0.3s ease;
     background-color: var(--bg-color);
     max-width: 1000px;
-    height: 100vh;
+    min-height: 100vh;
+    margin-top: 70px; /* Add top margin to account for fixed header */
 }
 
 .main-content.expanded {
@@ -466,7 +480,7 @@ body {
 
 .user-info p {
     font-size: 0.85rem;
-    color: #666;
+    color: #999999;
     margin-bottom: 1rem;
 }
 
@@ -492,7 +506,7 @@ body {
 
 .stat-label {
     font-size: 0.75rem;
-    color: #666;
+    color: #999999;
     margin-top: 0.25rem;
 }
 
@@ -542,4 +556,509 @@ body {
 
 .menu-items .logout-link:hover {
     background-color: rgba(255, 68, 68, 0.1);
-} 
+}
+
+/* Address Styles */
+.address-container {
+    padding: 1.5rem;
+    max-width: 800px;
+    margin: 80px auto 0;
+}
+
+.address-container h1 {
+    font-size: 2.5rem;
+    margin-bottom: 2rem;
+    color: #45935b;
+    font-weight: 700;
+    text-align: center;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+    position: relative;
+    padding-bottom: 1rem;
+    letter-spacing: 0.5px;
+}
+
+.address-container h1::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100px;
+    height: 3px;
+    background: #45935b;
+    border-radius: 2px;
+    box-shadow: 0 2px 4px rgba(69, 147, 91, 0.2);
+}
+
+.no-address-message {
+    text-align: center;
+    color: #666;
+    margin: 2rem 0;
+    font-size: 1.1rem;
+    display: none;
+}
+
+.no-address-message.visible {
+    display: block;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.default-badge {
+    background: rgba(69, 147, 91, 0.1);
+    color: #45935b;
+    padding: 0.3rem 0.8rem;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    margin-left: 0.8rem;
+}
+
+/* Add New Address Button */
+.add-address-btn {
+    display: none; /* Hidden by default */
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 1rem 2rem;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 2rem auto;
+    transition: all 0.3s ease;
+    width: fit-content;
+    min-width: 220px;
+    opacity: 0;
+    transform: translateY(20px);
+    pointer-events: none;
+}
+
+.add-address-btn.visible {
+    display: flex;
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+    animation: fadeInUp 0.3s ease forwards;
+}
+
+.add-address-btn:hover {
+    background: #0056b3;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
+}
+
+.add-address-btn i {
+    font-size: 1.2rem;
+    margin-right: 0.5rem;
+}
+
+/* Animation for Add New Address button */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeOutDown {
+    from {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+}
+
+/* Hide button when limit reached */
+.address-container.limit-reached .add-address-btn {
+    display: none;
+    animation: fadeOutDown 0.3s ease forwards;
+}
+
+/* Address Modal Styles */
+#addressModal {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.85);
+    z-index: 1000;
+    padding: 1rem;
+    box-sizing: border-box;
+}
+
+.address-modal {
+    padding: 1.5rem;
+    max-width: 450px;
+    background: #1a1a1a;
+    border-radius: 20px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    width: 95%;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.address-modal h2 {
+    color: #fff;
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    text-align: left;
+    letter-spacing: 0.01em;
+}
+
+#addressForm {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem 1.5rem;
+    background: none;
+    padding: 0;
+    border-radius: 10px;
+}
+
+#addressForm .form-group {
+    background: #1a1a1a;
+    border: none;
+    margin-bottom: 0;
+}
+
+#addressForm .form-group label {
+    color: #ffffff;
+    font-size: 0.9rem;
+    font-weight: 500;
+    margin-bottom: 0.4rem;
+    display: block;
+}
+
+#addressForm .form-group input,
+#addressForm .form-group select {
+    width: 100%;
+    padding: 0.7rem 0.9rem;
+    background: #2a2a2a;
+    color: #ffffff;
+    border: 1px solid #444;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    transition: all 0.2s ease;
+}
+
+#addressForm .modal-buttons {
+    grid-column: 1 / -1;
+    margin-top: 1.5rem;
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+}
+
+/* Address Card Styles */
+.address-card {
+    background: #1E1E1E;
+    border: 1px solid #333;
+    border-radius: 15px;
+    padding: 1.2rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transition: all 0.2s ease;
+}
+
+.address-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+}
+
+.address-type {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.8rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.address-type strong {
+    background: linear-gradient(45deg, #45935b, #367347);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-shadow: none;
+}
+
+.address-details {
+    color: #e0e0e0;
+    margin-bottom: 1rem;
+}
+
+.address-details p {
+    margin: 0.3rem 0;
+    font-size: 0.95rem;
+    line-height: 1.4;
+    color: #e0e0e0;
+}
+
+.address-actions {
+    display: flex;
+    gap: 0.8rem;
+    justify-content: flex-end;
+    padding-top: 0.8rem;
+    border-top: 1px solid #333;
+    margin-top: 0.8rem;
+}
+
+.address-actions button {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 80px;
+}
+
+.address-actions .set-default-btn {
+    background: transparent;
+    color: #45935b;
+    border: 1px solid #45935b;
+}
+
+.address-actions .set-default-btn:hover {
+    background: rgba(69, 147, 91, 0.1);
+}
+
+.address-actions .edit-btn {
+    background: #45935b;
+    color: #ffffff;
+}
+
+.address-actions .edit-btn:hover {
+    background: #367347;
+}
+
+.address-actions .remove-btn {
+    background: #dc3545;
+    color: #ffffff;
+}
+
+.address-actions .remove-btn:hover {
+    background: #c82333;
+}
+
+/* Delete Confirmation Modal */
+.confirmation-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.85);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+.confirmation-modal {
+    background: #1E1E1E;
+    border-radius: 20px;
+    width: 90%;
+    max-width: 400px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    transform: scale(0.95);
+    opacity: 0;
+    transition: all 0.3s ease;
+}
+
+.confirmation-overlay[style*="display: flex"] .confirmation-modal {
+    transform: scale(1);
+    opacity: 1;
+}
+
+.modal-content {
+    padding: 2rem;
+}
+
+.confirmation-modal h3 {
+    color: #fff;
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+.confirmation-modal p {
+    color: #e0e0e0;
+    font-size: 1rem;
+    line-height: 1.5;
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.confirmation-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+}
+
+.confirmation-buttons button {
+    padding: 0.8rem 1.5rem;
+    border-radius: 10px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    min-width: 120px;
+    border: none;
+}
+
+.confirm-cancel {
+    background: #2a2a2a;
+    color: #fff;
+    border: 1px solid #444 !important;
+}
+
+.confirm-cancel:hover {
+    background: #333;
+}
+
+.confirm-delete {
+    background: #e94c4c;
+    color: #fff;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.confirm-delete:hover {
+    background: #d43535;
+}
+
+.confirm-delete:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+.confirm-delete .button-text {
+    position: relative;
+    z-index: 1;
+}
+
+.confirm-delete .loading-spinner {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 20px;
+    height: 20px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    display: none;
+}
+
+@keyframes spin {
+    to {
+        transform: translate(-50%, -50%) rotate(360deg);
+    }
+}
+
+/* Success Modal */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.85);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+.success-modal {
+    background: #1E1E1E;
+    border-radius: 20px;
+    padding: 2rem;
+    width: 90%;
+    max-width: 400px;
+    text-align: center;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    transform: scale(0.95);
+    opacity: 0;
+    transition: all 0.3s ease;
+}
+
+.modal-overlay[style*="display: flex"] .success-modal {
+    transform: scale(1);
+    opacity: 1;
+}
+
+.success-modal .success-icon {
+    font-size: 3rem;
+    color: #28a745;
+    margin-bottom: 1rem;
+}
+
+.success-modal p {
+    color: #fff;
+    font-size: 1.1rem;
+    margin: 0;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+    .confirmation-modal,
+    .success-modal {
+        width: 95%;
+        margin: 1rem;
+    }
+
+    .confirmation-buttons {
+        flex-direction: column;
+    }
+
+    .confirmation-buttons button {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .modal-content {
+        padding: 1.5rem;
+    }
+
+    .confirmation-modal h3 {
+        font-size: 1.3rem;
+    }
+
+    .confirmation-modal p {
+        font-size: 0.95rem;
+        margin-bottom: 1.5rem;
+    }
+}

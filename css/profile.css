@@ -1,9 +1,5 @@
 /* Profile Page Styles */
-body {
-    background-color: var(--bg-color);
-    min-height: 100vh;
-    overflow-x: hidden;
-}
+body {    background-color: var(--bg-color);    min-height: 100vh;    overflow-x: hidden;    color: var(--text-color);}
 
 .container {
     display: flex;
@@ -46,8 +42,6 @@ body {
     z-index: 1000;
 }
 
-
-
 .back-button:hover {
     transform: translateX(-5px);
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
@@ -61,31 +55,17 @@ body {
 .profile-container {
     max-width: 800px;
     margin: 0 auto;
-    background: #1a1a1a;
+    background: #1a1a1a; /* Dark background */
     border-radius: 24px;
     padding: 1.2rem;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); /* Slightly darker shadow for contrast */
     position: relative;
-    margin-top: 4rem;
-    
+    margin-top: 1rem;
+    transition: margin-left 0.3s ease;
+    color: #f0f0f0; /* Lighter text color for contrast */
 }
 
-.profile-header {
-    text-align: center;
-    margin-bottom: 1rem;
-}
-
-.profile-header h2 {
-    font-size: 1.5rem;
-    color: white;
-    margin-bottom: 0.2rem;
-    font-weight: 600;
-}
-
-.profile-header p {
-    color: #888;
-    font-size: 0.85rem;
-}
+.profile-header {    text-align: center;    margin-bottom: 1rem;}.profile-header h2 {    font-size: 1.5rem;    color: #ffffff;    margin-bottom: 0.2rem;    font-weight: 600;}.profile-header p {    color: #cccccc;    font-size: 0.85rem;}
 
 /* Form Grid Adjustments */
 .form-grid {
@@ -102,15 +82,7 @@ body {
     cursor: pointer;
 }
 
-.profile-image-container {
-    width: 160px;
-    height: 160px;
-    border-radius: 20px;
-    overflow: hidden;
-    position: relative;
-    background: #2a2a2a;
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-}
+.profile-image-container {    width: 160px;    height: 160px;    border-radius: 20px;    overflow: hidden;    position: relative;    background: #f5f5f5;    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);}
 
 .profile-image-container img {
     width: 100%;
@@ -160,72 +132,11 @@ body {
     margin-bottom: 0.6rem;
 }
 
-.input-group label {
-    display: block;
-    margin-bottom: 0.2rem;
-    color: #ddd;
-    font-weight: 500;
-    font-size: 0.8rem;
-}
+.input-group label {    display: block;    margin-bottom: 0.2rem;    color: #bbbbbb;    font-weight: 500;    font-size: 0.8rem;}
 
-.input-group input {
-    width: 100%;
-    padding: 0.6rem 0.8rem;
-    border: 2px solid #333;
-    border-radius: 8px;
-    font-size: 0.85rem;
-    background: #2a2a2a;
-    color: white;
-}
+.input-group input {    width: 100%;    padding: 0.6rem 0.8rem;    border: 1px solid #444444;    border-radius: 8px;    font-size: 0.85rem;    background: #2a2a2a;    color: #ffffff;}.input-group input:focus {    border-color: #3b7a57;    outline: none;    box-shadow: 0 0 0 2px rgba(59, 122, 87, 0.2);}/* Date picker specific styles */.input-group input[type="date"] {    background: white;    color: var(--text-color);    position: relative;}
 
-.input-group input:focus {
-    border-color: var(--primary-color);
-    outline: none;
-    box-shadow: 0 0 0 2px rgba(59, 122, 87, 0.1);
-}
-
-/* Date picker specific styles */
-.input-group input[type="date"] {
-    background: #2a2a2a;
-    color: white;
-    position: relative;
-}
-
-/* Calendar icon color */
-.input-group input[type="date"]::-webkit-calendar-picker-indicator {
-    background-color: white;
-    padding: 4px;
-    cursor: pointer;
-    border-radius: 4px;
-    filter: invert(1);
-    opacity: 0.8;
-    transition: opacity 0.2s;
-}
-
-.input-group input[type="date"]::-webkit-calendar-picker-indicator:hover {
-    opacity: 1;
-}
-
-/* Date picker popup styles */
-::-webkit-datetime-edit-fields-wrapper {
-    color: white;
-}
-::-webkit-datetime-edit-text {
-    color: white;
-    padding: 0 0.3em;
-}
-::-webkit-datetime-edit-month-field {
-    color: white;
-}
-::-webkit-datetime-edit-day-field {
-    color: white;
-}
-::-webkit-datetime-edit-year-field {
-    color: white;
-}
-::-webkit-calendar-picker-indicator {
-    background-color: white;
-}
+/* Calendar icon color */.input-group input[type="date"]::-webkit-calendar-picker-indicator {    padding: 4px;    cursor: pointer;    border-radius: 4px;    opacity: 0.8;    transition: opacity 0.2s;}.input-group input[type="date"]::-webkit-calendar-picker-indicator:hover {    opacity: 1;}/* Date picker popup styles */::-webkit-datetime-edit-fields-wrapper {    color: var(--text-color);}::-webkit-datetime-edit-text {    color: var(--text-color);    padding: 0 0.3em;}::-webkit-datetime-edit-month-field {    color: var(--text-color);}::-webkit-datetime-edit-day-field {    color: var(--text-color);}::-webkit-datetime-edit-year-field {    color: var(--text-color);}::-webkit-calendar-picker-indicator {    background-color: transparent;}
 
 /* Firefox specific styles */
 .input-group input[type="date"]::-moz-calendar-picker-indicator {
@@ -330,44 +241,6 @@ body {
     left: 60px;
 }
 
-/* Dark Mode Support */
-@media (prefers-color-scheme: dark) {
-    .profile-container {
-        background: #1a1a1a;
-    }
-
-    .profile-header h2 {
-        color: #fff;
-    }
-
-    .profile-header p {
-        color: #888;
-    }
-
-    .input-group label {
-        color: #ddd;
-    }
-
-    .input-group input {
-        background: #2a2a2a;
-        border-color: #333;
-        color: #fff;
-    }
-
-    .input-group input:focus {
-        background: #2d2d2d;
-        border-color: var(--primary-color);
-    }
-
-    .input-group input:hover {
-        border-color: #444;
-    }
-
-    .back-button {
-        background: #2a2a2a;
-    }
-}
-
 /* Main Content Adjustments */
 .main-content {
     flex: 1;
@@ -383,20 +256,7 @@ body {
     margin-left: 0;
 }
 
-/* Sidebar Styles */
-.sidebar {
-    width: 280px;
-    background: white;
-    height: 100vh;
-    position: fixed;
-    left: 0;
-    top: 0;
-    transition: all 0.3s ease;
-    z-index: 999;
-    padding-top: 15px;
-    box-shadow: 2px 0 5px rgba(0,0,0,0.1);
-    overflow-y: auto;
-}
+/* Sidebar Styles */.sidebar {    width: 280px;    background: white;    height: 100vh;    position: fixed;    left: 0;    top: 0;    transition: all 0.3s ease;    z-index: 999;    padding-top: 15px;    box-shadow: 2px 0 5px rgba(0,0,0,0.1);    overflow-y: auto;}
 
 .sidebar.collapsed {
     left: -280px;
@@ -414,20 +274,7 @@ body {
     left: 0;
 }
 
-.toggle-btn {
-    background: var(--primary-color);
-    color: white;
-    border: none;
-    width: 40px;
-    height: 40px;
-    border-radius: 0 8px 8px 0;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 2px 0 10px rgba(0,0,0,0.1);
-    transition: all 0.3s ease;
-}
+.toggle-btn {    background: var(--primary-color);    color: white;    border: none;    width: 40px;    height: 40px;    border-radius: 0 8px 8px 0;    cursor: pointer;    display: flex;    align-items: center;    justify-content: center;    box-shadow: 2px 0 10px rgba(0,0,0,0.1);    transition: all 0.3s ease;}
 
 .toggle-btn:hover {
     background: var(--secondary-color);
@@ -439,108 +286,16 @@ body {
     transition: transform 0.3s ease;
 }
 
-/* User Info Styles */
-.user-info {
-    text-align: center;
-    padding: 1.5rem 1rem;
-    border-bottom: 1px solid #eee;
-    margin-top: 20px;
-}
-
-.user-avatar {
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-    margin-bottom: 0.75rem;
-    object-fit: cover;
-    border: 3px solid var(--primary-color);
-    padding: 2px;
-    background: white;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-}
-
-.user-info h3 {
-    font-size: 1rem;
-    margin-bottom: 0.25rem;
-    color: var(--text-color);
-}
-
-.user-info p {
-    font-size: 0.85rem;
-    color: #666;
-    margin-bottom: 1rem;
-}
-
-.user-stats {
-    display: flex;
-    justify-content: center;
-    gap: 1.5rem;
-    margin-top: 0.75rem;
-    padding: 0.75rem;
-    background: #f8f9fa;
-    border-radius: 8px;
-}
+/* User Info Styles */.user-info {    text-align: center;    padding: 1.5rem 1rem;    border-bottom: 1px solid #eaeaea;    margin-top: 20px;}.user-avatar {    width: 80px;    height: 80px;    border-radius: 50%;    margin-bottom: 0.75rem;    object-fit: cover;    border: 3px solid var(--primary-color);    padding: 2px;    background: white;    box-shadow: 0 2px 8px rgba(0,0,0,0.1);}.user-info h3 {    font-size: 1rem;    margin-bottom: 0.25rem;    color: var(--text-color);}.user-info p {    font-size: 0.85rem;    color: #777;    margin-bottom: 1rem;}.user-stats {    display: flex;    justify-content: center;    gap: 1.5rem;    margin-top: 0.75rem;    padding: 0.75rem;    background: #f8f8f8;    border-radius: 8px;}
 
 .stat {
     text-align: center;
 }
 
-.stat-number {
-    font-weight: 600;
-    color: var(--primary-color);
-    font-size: 1.1rem;
-}
+.stat-number {    font-weight: 600;    color: var(--primary-color);    font-size: 1.1rem;}.stat-label {    font-size: 0.75rem;    color: #666;    margin-top: 0.25rem;}
 
-.stat-label {
-    font-size: 0.75rem;
-    color: #666;
-    margin-top: 0.25rem;
-}
+/* Menu Items Styles */.menu-items {    list-style: none;    padding: 0.75rem;}.menu-items li {    margin-bottom: 0.25rem;}.menu-items a {    display: flex;    align-items: center;    gap: 0.6rem;    padding: 0.6rem 0.75rem;    color: var(--text-color);    text-decoration: none;    border-radius: 5px;    transition: all 0.3s;    font-size: 0.9rem;}.menu-items a:hover {    background-color: rgba(59, 122, 87, 0.1);    color: var(--primary-color);}.menu-items i {    width: 16px;    text-align: center;    font-size: 0.95rem;}.menu-items a.active {    background-color: rgba(59, 122, 87, 0.15);    color: var(--primary-color);    font-weight: 500;}.menu-items .logout-link {    color: #ff4444;    margin-top: 0.5rem;}.menu-items .logout-link:hover {    background-color: rgba(255, 68, 68, 0.1);}
 
-/* Menu Items Styles */
-.menu-items {
-    list-style: none;
-    padding: 0.75rem;
-}
-
-.menu-items li {
-    margin-bottom: 0.25rem;
-}
-
-.menu-items a {
-    display: flex;
-    align-items: center;
-    gap: 0.6rem;
-    padding: 0.6rem 0.75rem;
-    color: var(--text-color);
-    text-decoration: none;
-    border-radius: 5px;
-    transition: all 0.3s;
-    font-size: 0.9rem;
-}
-
-.menu-items a:hover {
-    background-color: rgba(59, 122, 87, 0.1);
-    color: var(--primary-color);
-}
-
-.menu-items i {
-    width: 16px;
-    text-align: center;
-    font-size: 0.95rem;
-}
-
-.menu-items a.active {
-    background-color: rgba(59, 122, 87, 0.1);
-    color: var(--primary-color);
-    font-weight: 500;
-}
-
-.menu-items .logout-link {
-    color: #ff4444;
-    margin-top: 0.5rem;
-}
-
-.menu-items .logout-link:hover {
-    background-color: rgba(255, 68, 68, 0.1);
+.sidebar.collapsed + .main-content .profile-container {
+    margin-left: 0;
 } 

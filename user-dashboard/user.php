@@ -399,13 +399,13 @@ try {
         </div>
         <nav class="nav-menu">
             <a href="user.php"><i class="fa-solid fa-house"></i> Home</a>
-            <a href="#"><i class="fa-solid fa-apple-whole"></i> Fruits</a>
+            <a href="category/php/fruits.php"><i class="fa-solid fa-apple-whole"></i> Fruits</a>
             <a href="#"><i class="fa-solid fa-carrot"></i> Vegetables</a>
             <a href="#"><i class="fa-solid fa-cow"></i> Dairy</a>
             <a href="#"><i class="fa-solid fa-drumstick-bite"></i> Meat</a>
             <a href="#"><i class="fa-solid fa-seedling"></i> Organic</a>
             <a href="#"><i class="fa-solid fa-bread-slice"></i> Bakery</a>
-            <a href="#" class="cart"><i class="fa-solid fa-cart-shopping"></i></a>
+            <a href="category/php/cart.php" class="cart"><i class="fa-solid fa-cart-shopping"></i></a>
         </nav>
     </header>
 
@@ -429,7 +429,7 @@ try {
                 </div>
             </div>
             <ul class="menu-items">
-                <li><a href="#" class="active"><i class="fa-solid fa-bag-shopping"></i> My Orders</a></li>
+                <li><a href="orders.php"><i class="fa-solid fa-bag-shopping"></i> My Orders</a></li>
                 <li><a href="profile.php"><i class="fa-solid fa-user"></i> Profile</a></li>
                 <li><a href="payment.php"><i class="fa-solid fa-credit-card"></i> Payment Methods</a></li>
                 <li><a href="address.php"><i class="fa-solid fa-location-dot"></i> Delivery Address</a></li>
@@ -857,15 +857,20 @@ try {
                 container.id = 'notification-container';
                 container.style.cssText = `
                     position: fixed;
-                    top: 20px;
+                    bottom: 20px;
                     right: 20px;
                     z-index: 1000;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: flex-end;
+                    pointer-events: none;
                 `;
                 document.body.appendChild(container);
             }
-            container.appendChild(notification);
+            container.appendChild(notification); // stack upward
             setTimeout(() => {
                 notification.style.opacity = '0';
+                notification.style.transform = 'translateY(40px) scale(0.95)';
                 setTimeout(() => notification.remove(), 300);
             }, 3000);
         }

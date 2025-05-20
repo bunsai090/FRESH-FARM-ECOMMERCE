@@ -46,8 +46,6 @@ body {
     z-index: 1000;
 }
 
-
-
 .back-button:hover {
     transform: translateX(-5px);
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
@@ -66,7 +64,8 @@ body {
     padding: 1.2rem;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
     position: relative;
-    margin-top: 0.5rem;
+    margin-top: 1rem;
+    
 }
 
 .profile-header {
@@ -364,6 +363,97 @@ body {
 
     .back-button {
         background: #2a2a2a;
+    }
+
+    /* Orders Container Dark Theme */
+    .orders-container {
+        background-color: #1e1e1e; /* Dark background for the container */
+        color: #e0e0e0; /* Light text color */
+    }
+
+    .orders-header h2 {
+        color: #ffffff; /* White heading */
+    }
+
+    .orders-header p {
+        color: #b0b0b0; /* Lighter gray for paragraph */
+    }
+
+    .order-card {
+        background-color: #2c2c2c; /* Darker card background */
+        border: 1px solid #3a3a3a; /* Subtle border */
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .order-id strong {
+        color: #ffffff;
+    }
+
+    .order-date,
+    .order-status {
+        color: #c0c0c0; /* Lighter text for date and status */
+    }
+
+    .status-pending {
+        background-color: #4a4a4a;
+        color: #f0f0f0;
+    }
+    .status-cancelled {
+        background-color: #5a3e3e;
+        color: #f5c0c0;
+    }
+     .status-delivered /* Assuming you might have this status */ {
+        background-color: #3e5a3e;
+        color: #c0f5c0;
+    }
+
+
+    .item-name {
+        color: #e0e0e0;
+    }
+
+    .item-qty {
+        color: #b0b0b0;
+    }
+
+    .order-total strong {
+        color: #ffffff;
+    }
+
+    .order-total {
+        color: #e0e0e0;
+    }
+
+    .view-details-btn,
+    .cancel-order-btn {
+        background-color: #3a3a3a;
+        color: #e0e0e0;
+        border: 1px solid #4a4a4a;
+    }
+
+    .view-details-btn:hover,
+    .cancel-order-btn:hover {
+        background-color: #4a4a4a;
+        color: #ffffff;
+    }
+
+    .cancel-order-btn {
+        color: #ff8a8a; /* Warning color for cancel button text */
+    }
+
+    .cancel-order-btn:hover {
+        background-color: #5a3e3e;
+        color: #ffffff;
+    }
+
+    .no-orders-message {
+        background-color: #2c2c2c;
+        color: #c0c0c0;
+        border: 1px solid #3a3a3a;
+    }
+
+    .no-orders-message i {
+        color: #888888;
     }
 }
 

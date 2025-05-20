@@ -223,7 +223,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </div>
             </div>
             <ul class="menu-items">
-                <li><a href="user.php"><i class="fa-solid fa-bag-shopping"></i> My Orders</a></li>
+                <li><a href="orders.php"><i class="fa-solid fa-bag-shopping"></i> My Orders</a></li>
                 <li><a href="#" class="active"><i class="fa-solid fa-user"></i> Profile</a></li>
                 <li><a href="payment.php"><i class="fa-solid fa-credit-card"></i> Payment Methods</a></li>
                 <li><a href="address.php"><i class="fa-solid fa-location-dot"></i> Delivery Address</a></li>
@@ -352,6 +352,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         function toggleSidebar() {
             sidebar.classList.toggle('collapsed');
             mainContent.classList.toggle('expanded');
+            
+            // Adjust profile container
+            const profileContainer = document.querySelector('.profile-container');
+            if (profileContainer) {
+                if (sidebar.classList.contains('collapsed')) {
+                    profileContainer.style.marginLeft = '0';
+                } else {
+                    profileContainer.style.marginLeft = '280px'; // or var(--sidebar-width) if using CSS variable
+                }
+            }
             
             // Toggle the icon between bars and times
             if (sidebar.classList.contains('collapsed')) {

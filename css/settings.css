@@ -1,6 +1,9 @@
 /* Profile Page Styles */
 body {
-    background-color: var(--bg-color);
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f9f9f9;
     min-height: 100vh;
     overflow-x: hidden;
 }
@@ -30,7 +33,7 @@ body {
 /* Back Button Styles */
 .back-button {
     position: fixed;
-    left: calc(350px + 20px); /* Sidebar width (280px) + margin */
+    left: calc(280px + 20px + 1.5rem); /* Sidebar width + gap + main-content padding */
     top: 20px;
     width: 40px;
     height: 40px;
@@ -45,8 +48,6 @@ body {
     transition: all 0.3s ease;
     z-index: 1000;
 }
-
-
 
 .back-button:hover {
     transform: translateX(-5px);
@@ -326,7 +327,7 @@ body {
 
 /* Adjust back button when sidebar is collapsed */
 .sidebar.collapsed + .main-content .back-button {
-    left: 60px;
+    left: calc(1.5rem + 20px); /* main-content padding + desired offset */
 }
 
 /* Dark Mode Support */
@@ -370,7 +371,7 @@ body {
 /* Main Content Adjustments */
 .main-content {
     flex: 1;
-    margin-left: 280px;
+    margin-left: calc(280px + 20px); /* Sidebar width + 20px gap */
     padding: 0.5rem 1.5rem;
     transition: all 0.3s ease;
     background-color: var(--bg-color);
@@ -433,7 +434,7 @@ body {
     width: 45px;
 }
 
-.toggle-btn i {
+.toggle-btn
     font-size: 20px;
     transition: transform 0.3s ease;
 }
@@ -542,4 +543,244 @@ body {
 
 .menu-items .logout-link:hover {
     background-color: rgba(255, 68, 68, 0.1);
-} 
+}
+
+/* Settings Page Specific Styles */
+.settings-container {
+    max-width: 600px;
+    margin: 0 auto;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.settings-container h1 {
+    margin-bottom: 20px;
+    font-size: 24px;
+    color: #333;
+}
+
+.tabs {
+    border-bottom: 1px solid #333; /* Darker border for tabs */
+    margin-bottom: 20px;
+}
+
+.tab-link {
+    background-color: transparent;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    font-size: 1rem;
+    color: #aaa; /* Light gray for inactive tab text */
+    margin-right: 10px;
+    position: relative;
+    transition: color 0.3s ease;
+}
+
+.tab-link.active {
+    color: var(--primary-color); /* Green for active tab text */
+    font-weight: 600;
+}
+
+.tab-link.active::after {
+    content: '';
+    position: absolute;
+    bottom: -1px; 
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: var(--primary-color);
+}
+
+.tab-content h3 {
+    font-size: 1.1rem; 
+    color: #f0f0f0; /* Light text for headings */
+    margin-bottom: 20px; /* Increased margin */
+    font-weight: 600;
+}
+
+/* Input group specific to settings page form */
+.settings-container .input-group label {
+    display: block;
+    margin-bottom: 8px; 
+    color: #bbb; /* Light gray for labels */
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+.settings-container .input-group input[type="password"] {
+    width: 100%; /* Full width for the input itself */
+    padding: 12px; /* Increased padding */
+    border: 1px solid #444; /* Darker border for inputs */
+    border-radius: 6px;
+    font-size: 0.9rem;
+    background: #333; /* Dark background for input fields */
+    color: #f0f0f0; /* Light text in input fields */
+    box-sizing: border-box;
+}
+
+.settings-container .input-group input[type="password"]:focus {
+    border-color: var(--primary-color);
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(59, 122, 87, 0.2);
+    background: #3a3a3a; /* Slightly lighter on focus */
+}
+
+.password-input-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+/* Ensure the input takes full width within its container if an icon is present */
+.password-input-container input[type="password"] {
+    width: calc(100% - 40px); /* Adjust if icon size/padding changes */
+     /* Remove margin-right if icon is absolutely positioned */
+}
+
+
+.password-toggle {
+    position: absolute;
+    right: 1px; /* Adjust to align within input padding */
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #aaa; /* Eye icon color */
+    padding: 10px; /* Padding for click area */
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+}
+
+.password-toggle i {
+    font-size: 0.9rem;
+}
+
+
+.settings-container .btn {
+    padding: 12px 25px; /* Increased padding for buttons */
+    font-size: 0.9rem;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    font-weight: 500; /* Slightly bolder text */
+}
+
+.settings-container .btn-primary {
+    background-color: var(--primary-color); 
+    color: white;
+    border: none;
+}
+
+.settings-container .btn-primary:hover {
+    background-color: #2e7d32; 
+}
+
+.settings-container .btn-danger {
+    background-color: #d9534f; 
+    color: white;
+    border: none;
+}
+
+.settings-container .btn-danger:hover {
+    background-color: #c9302c; 
+}
+
+.danger-zone-hr {
+    border: none;
+    border-top: 1px solid #444; /* Lighter hr for dark theme */
+    margin: 30px 0;
+}
+
+.danger-zone {
+    /* Styles for the danger zone section */
+}
+
+.danger-zone h3 {
+    color: #d9534f; 
+    font-size: 1.1rem;
+    margin-bottom: 15px; /* Increased margin */
+}
+
+/* --- Force dark theme for settings-container only --- */
+.settings-container {
+    background: #23272b !important;
+    color: #f0f0f0 !important;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.45);
+}
+
+.settings-container .tabs {
+    border-bottom: 1px solid #333 !important;
+}
+
+.settings-container .tab-link {
+    color: #aaa !important;
+    background: transparent !important;
+    border: none;
+    transition: color 0.2s;
+}
+
+.settings-container .tab-link.active {
+    color: #4caf50 !important;
+    font-weight: 600;
+}
+
+.settings-container .tab-link.active::after {
+    background: #4caf50 !important;
+}
+
+.settings-container .tab-content h3 {
+    color: #f0f0f0 !important;
+}
+
+.settings-container .input-group label {
+    color: #bbb !important;
+}
+
+.settings-container .input-group input,
+.settings-container .input-group input[type="password"] {
+    background: #18191a !important;
+    color: #f0f0f0 !important;
+    border: 1px solid #333 !important;
+}
+
+.settings-container .input-group input:focus,
+.settings-container .input-group input[type="password"]:focus {
+    border-color: #4caf50 !important;
+    background: #23272b !important;
+}
+
+.settings-container .password-toggle {
+    color: #aaa !important;
+}
+
+.settings-container .btn-primary {
+    background: #4caf50 !important;
+    color: #fff !important;
+    border: none;
+}
+
+.settings-container .btn-primary:hover {
+    background: #388e3c !important;
+}
+
+.settings-container .btn-danger {
+    background: #d9534f !important;
+    color: #fff !important;
+    border: none;
+}
+
+.settings-container .btn-danger:hover {
+    background: #c9302c !important;
+}
+
+.settings-container .danger-zone-hr {
+    border-top: 1px solid #333 !important;
+}
+
+.settings-container .danger-zone h3 {
+    color: #ff5555 !important;
+}
