@@ -1,4 +1,4 @@
-<!-- <?php
+<?php
 session_start();
 
 // Check if user is logged in and is an admin
@@ -404,4 +404,4 @@ $orders = getOrders($conn, $search);
     });
 </script>
 </body>
-</html> -->
+</html>
